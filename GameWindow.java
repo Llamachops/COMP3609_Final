@@ -16,8 +16,11 @@ public class GameWindow extends JFrame implements
 	private Thread gameThread = null; // the thread that controls the game
 	private volatile boolean isRunning = false; // used to stop the game thread
 
-	private BirdAnimation animation = null; // animation sprite
-	private ImageEffect imageEffect; // sprite demonstrating an image effect
+	// private BirdAnimation animation = null; // animation sprite
+	// private ImageEffect imageEffect; // sprite demonstrating an image effect
+
+	private boolean movingLeft = false; // used to move the player left
+	private boolean movingRight = false; // used to move the player right
 
 	private BufferedImage image; // drawing area for each frame
 
@@ -68,7 +71,7 @@ public class GameWindow extends JFrame implements
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
-		animation = new BirdAnimation();
+		// animation = new BirdAnimation();
 		soundManager = SoundManager.getInstance();
 		image = new BufferedImage(pWidth, pHeight, BufferedImage.TYPE_INT_RGB);
 
@@ -122,11 +125,19 @@ public class GameWindow extends JFrame implements
 	}
 
 	public void gameUpdate() {
+
+		if (movingLeft) {
+			tileMap.moveLeft();
+		} else if (movingRight) {
+			tileMap.moveRight();
+		}
+		
 		tileMap.update();
 
-		if (!isPaused && isAnimShown && !isAnimPaused)
-			animation.update();
-		imageEffect.update();
+		if (!isPaused && isAnimShown && !isAnimPaused) {
+			// animation.update();
+		}
+		// imageEffect.update();
 
 	}
 
@@ -157,9 +168,9 @@ public class GameWindow extends JFrame implements
 
 		tileMap.draw(imageContext);
 
-		if (isAnimShown)
-			animation.draw(imageContext); // draw the animation
-
+		if (isAnimShown) {
+			// animation.draw(imageContext); // draw the animation
+		}
 		// imageEffect.draw(imageContext); // draw the image effect
 
 		// Graphics2D g2 = (Graphics2D) getGraphics(); // get the graphics context for
@@ -371,7 +382,7 @@ public class GameWindow extends JFrame implements
 				System.exit(0);
 			}
 
-			imageEffect = new ImageEffect(this);
+			// imageEffect = new ImageEffect (this);
 			gameThread = new Thread(this);
 			gameThread.start();
 
@@ -406,18 +417,17 @@ public class GameWindow extends JFrame implements
 		int keyCode = e.getKeyCode();
 
 		if ((keyCode == KeyEvent.VK_ESCAPE) || (keyCode == KeyEvent.VK_Q) ||
-				(keyCode == KeyEvent.VK_END)) {
-			isRunning = false; // user can quit anytime by pressing
-			return; // one of these keys (ESC, Q, END)
+			(keyCode == KeyEvent.VK_END)) {
+			isRunning = false; // user can quit by pressing ESC, Q or END
+			return;
 		} else if (keyCode == KeyEvent.VK_LEFT) {
-			tileMap.moveLeft();
+			movingLeft = true;
 		} else if (keyCode == KeyEvent.VK_RIGHT) {
-			tileMap.moveRight();
+			movingRight = true;
 		}
-		if (keyCode == KeyEvent.VK_SPACE) {
+
+		if ((keyCode == KeyEvent.VK_SPACE) || (keyCode == KeyEvent.VK_UP)) {
 			tileMap.jump();
-		} else if (keyCode == KeyEvent.VK_UP) {
-			// bat.moveUp();
 		} else if (keyCode == KeyEvent.VK_DOWN) {
 			// bat.moveDown();
 		}
@@ -425,6 +435,13 @@ public class GameWindow extends JFrame implements
 	}
 
 	public void keyReleased(KeyEvent e) {
+		int keyCode = e.getKeyCode();
+
+		if (keyCode == KeyEvent.VK_LEFT) {
+			movingLeft = false;
+		} else if (keyCode == KeyEvent.VK_RIGHT) {
+			movingRight = false;
+		}
 
 	}
 
@@ -482,14 +499,14 @@ public class GameWindow extends JFrame implements
 		} else if (isOverShowAnimButton && !isPaused) {// mouse click on Start Anim button
 			isAnimShown = true;
 			isAnimPaused = false;
-			animation.start();
+			// animation.start();
 		} else if (isOverPauseAnimButton) { // mouse click on Pause Anim button
 			if (isAnimPaused) {
 				isAnimPaused = false;
-				animation.playSound();
+				// animation.playSound();
 			} else {
 				isAnimPaused = true; // toggle pausing
-				animation.stopSound();
+				// animation.stopSound();
 			}
 		} else if (isOverQuitButton) { // mouse click on Quit button
 			isRunning = false; // set running to false to terminate

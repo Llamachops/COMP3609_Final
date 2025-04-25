@@ -10,7 +10,7 @@ import java.awt.Point;
 
 public class Player {
 
-	private static final int DX = 8; // amount of X pixels to move in one keystroke
+	private static final int DX = 16; // amount of X pixels to move in one keystroke
 	private static final int DY = 32; // amount of Y pixels to move in one keystroke
 
 	private static final int TILE_SIZE = 64;
