@@ -54,10 +54,9 @@ public class TileMap {
 
         tiles = new Image[mapWidth][mapHeight];
         player = new Player(window, this, bgManager);
-        sprites = new LinkedList();
+        // sprites = new LinkedList();
 
-        Image playerImage = player.getImage();
-        int playerHeight = playerImage.getHeight(null);
+        int playerHeight = player.getHitboxHeight();
 
         int x, y;
         // x = (dimension.width / 2) + TILE_SIZE; // position player in middle of screen
@@ -160,21 +159,9 @@ public class TileMap {
         // get the scrolling position of the map
         // based on player's position
 
-        int offsetX = screenWidth / 2 -
-                Math.round(player.getX()) - TILE_SIZE;
+        int offsetX = screenWidth / 2 - Math.round(player.getX()) - TILE_SIZE;
         offsetX = Math.min(offsetX, 0);
         offsetX = Math.max(offsetX, screenWidth - mapWidthPixels);
-
-        /*
-         * // draw black background, if needed
-         * if (background == null ||
-         * screenHeight > background.getHeight(null))
-         * {
-         * g.setColor(Color.black);
-         * g.fillRect(0, 0, screenWidth, screenHeight);
-         * }
-         */
-        // draw the background first
 
         bgManager.draw(g2);
 
@@ -195,30 +182,23 @@ public class TileMap {
         }
 
         // draw player
+        Image playerAnimImage = player.getCurrentAnimImage();
+        int animWidth = playerAnimImage.getWidth(null);
+        int animHeight = playerAnimImage.getHeight(null);
+        int playerHitboxWidth = player.getHitboxWidth();
+        int playerHitboxHeight = player.getHitboxHeight();
+        int playerX = player.getX();
+        int playerY = player.getY();
 
-        g2.drawImage(player.getImage(),
-                Math.round(player.getX()) + offsetX,
-                Math.round(player.getY()), // + offsetY,
-                null);
+        int drawX = playerX + (playerHitboxWidth - animWidth) / 2;
+        int drawY = playerY + (playerHitboxHeight - animHeight) / 2;
 
-        /*
-         * // draw sprites
-         * Iterator i = map.getSprites();
-         * while (i.hasNext()) {
-         * Sprite sprite = (Sprite)i.next();
-         * int x = Math.round(sprite.getX()) + offsetX;
-         * int y = Math.round(sprite.getY()) + offsetY;
-         * g.drawImage(sprite.getImage(), x, y, null);
-         * 
-         * // wake up the creature when it's on screen
-         * if (sprite instanceof Creature &&
-         * x >= 0 && x < screenWidth)
-         * {
-         * ((Creature)sprite).wakeUp();
-         * }
-         * }
-         */
-
+        if (player.isFacingLeft()) {
+            g2.drawImage(playerAnimImage, drawX + animWidth + offsetX,
+                    drawY, -animWidth, animHeight, null);
+        } else {
+            g2.drawImage(playerAnimImage, drawX + offsetX, drawY, null);
+        }
     }
 
     public void moveLeft() {
@@ -243,6 +223,10 @@ public class TileMap {
 
         player.move(2);
 
+    }
+
+    public void stopMoving() {
+        player.setNotMovingHorizontal();
     }
 
     public void jump() {

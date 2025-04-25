@@ -130,6 +130,8 @@ public class GameWindow extends JFrame implements
 			tileMap.moveLeft();
 		} else if (movingRight) {
 			tileMap.moveRight();
+		} else {
+			tileMap.stopMoving();
 		}
 		
 		tileMap.update();
