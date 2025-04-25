@@ -15,10 +15,10 @@ import javax.swing.JFrame;
 
 public class BackgroundManager {
 
-	private String bgImages[] = { "images/fantasy-bg-layer0.png",
-			"images/fantasy-bg-layer1.png",
-			"images/fantasy-bg-layer2.png",
-			"images/fantasy-bg-layer3.png" };
+	private String bgImages[] = { "images/background/fantasy-bg-layer0.png",
+			"images/background/fantasy-bg-layer1.png",
+			"images/background/fantasy-bg-layer2.png",
+			"images/background/fantasy-bg-layer3.png" };
 	private int moveAmount[] = { 1, 3, 5, 10 };
 	// pixel amounts to move each background left or right
 	// a move amount of 0 makes a background stationary

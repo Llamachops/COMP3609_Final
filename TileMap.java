@@ -1,8 +1,6 @@
 import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.util.LinkedList;
-import java.util.Iterator;
 import javax.swing.JFrame;
 
 /**
@@ -14,7 +12,7 @@ import javax.swing.JFrame;
 
 public class TileMap {
 
-    private static final int TILE_SIZE = 64;
+    private static final int TILE_SIZE = 128;
     private static final int TILE_SIZE_BITS = 6;
 
     private Image[][] tiles;
@@ -22,7 +20,6 @@ public class TileMap {
     private int mapWidth, mapHeight;
     private int offsetY;
 
-    private LinkedList sprites;
     private Player player;
 
     BackgroundManager bgManager;
@@ -115,15 +112,6 @@ public class TileMap {
      */
     public void setTile(int x, int y, Image tile) {
         tiles[x][y] = tile;
-    }
-
-    /**
-     * Gets an Iterator of all the Sprites in this map,
-     * excluding the player Sprite.
-     */
-
-    public Iterator getSprites() {
-        return sprites.iterator();
     }
 
     /**
