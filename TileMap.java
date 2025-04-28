@@ -1,4 +1,7 @@
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.swing.JFrame;
@@ -16,9 +19,13 @@ public class TileMap {
     private static final int TILE_SIZE_BITS = 6;
 
     private Image[][] tiles;
+
+    private ArrayList<Coin> coins; // List of coins in the map
+    private int coinCounter = 0; // Counter for collected coins
+
     private int screenWidth, screenHeight;
     private int mapWidth, mapHeight;
-    private int offsetY;
+    private static int offsetY;
 
     private Player player;
 
@@ -45,9 +52,15 @@ public class TileMap {
         // get the y offset to draw all sprites and tiles
 
         offsetY = screenHeight - tilesToPixels(mapHeight);
+        System.out.println("screenWidth: " + screenWidth);
+        System.out.println("screenHeight: " + screenHeight);
+        System.out.println("mapWidth: " + mapWidth);
+        System.out.println("mapHeight: " + mapHeight);
         System.out.println("offsetY: " + offsetY);
 
         bgManager = new BackgroundManager(window, 12);
+
+        coins = new ArrayList<>();
 
         tiles = new Image[mapWidth][mapHeight];
         player = new Player(window, this, bgManager);
@@ -59,7 +72,7 @@ public class TileMap {
         // x = (dimension.width / 2) + TILE_SIZE; // position player in middle of screen
 
         x = 192; // position player in 'random' location
-        y = dimension.height - (TILE_SIZE + playerHeight);
+        y = tilesToPixels(mapHeight) - TILE_SIZE - playerHeight;
 
         player.setX(x);
         player.setY(y);
@@ -89,8 +102,12 @@ public class TileMap {
         return mapHeight;
     }
 
-    public int getOffsetY() {
+    public static int getOffsetY() {
         return offsetY;
+    }
+
+    public void addCoin(Coin coin) {
+        coins.add(coin);
     }
 
     /**
@@ -165,6 +182,11 @@ public class TileMap {
                             tilesToPixels(x) + offsetX,
                             tilesToPixels(y) + offsetY,
                             null);
+                    // Draw tile hitbox for debugging
+                    g2.setColor(Color.GREEN);
+                    g2.drawRect(tilesToPixels(x) + offsetX,
+                            tilesToPixels(y) + offsetY,
+                            TILE_SIZE, TILE_SIZE);
                 }
             }
         }
@@ -186,6 +208,37 @@ public class TileMap {
                     drawY, -animWidth, animHeight, null);
         } else {
             g2.drawImage(playerAnimImage, drawX + offsetX, drawY, null);
+        }
+
+        // Draw player hitbox for debugging
+        // TODO: Remove this in production code
+        Rectangle hitbox = player.getHitbox();
+        g2.setColor(Color.BLUE);
+        g2.drawRect(
+                hitbox.x + offsetX, // Apply horizontal scroll offset
+                hitbox.y, // No vertical scroll offset needed for player
+                hitbox.width,
+                hitbox.height);
+
+        // Draw coins
+        for (Coin coin : coins) {
+            if (!coin.isCollected()) {
+                g2.drawImage(coin.getAnimation().getImage(),
+                        coin.getX() + offsetX,
+                        coin.getY(),
+                        TILE_SIZE, TILE_SIZE, null);
+
+                // Draw coin hitbox for debugging
+                // TODO: Remove this in production code
+                g2.setColor(Color.RED);
+                Rectangle coinHitbox = coin.getHitbox(); // World coordinates
+                g2.drawRect(
+                    coinHitbox.x + offsetX, // Convert to screen X
+                    coinHitbox.y,
+                    coinHitbox.width,
+                    coinHitbox.height
+                );
+            }
         }
     }
 
@@ -231,6 +284,23 @@ public class TileMap {
 
     public void update() {
         player.update();
+
+        // Get the scrolling offsets
+        int offsetX = screenWidth / 2 - Math.round(player.getX()) - TILE_SIZE;
+        offsetX = Math.min(offsetX, 0);
+        offsetX = Math.max(offsetX, screenWidth - tilesToPixels(mapWidth));
+
+        int offsetY = this.offsetY;
+
+        // Check for coin collection
+        for (Coin coin : coins) {
+            if (!coin.isCollected() && player.getHitbox().intersects(coin.getHitbox())) {
+                coin.collect();
+                coinCounter++;
+                System.out.println("Coin collected! Total coins: " + coinCounter);
+            }
+            coin.update();
+        }
     }
 
 }

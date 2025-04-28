@@ -58,6 +58,9 @@ public class TileMapManager {
                 int tile = ch - 'A';
                 if (tile >= 0 && tile < tiles.size()) {
                     newMap.setTile(x, y, tiles.get(tile));
+                } else if (ch == 'o') {
+                    Coin coin = new Coin(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY());
+                    newMap.addCoin(coin);
                 }
             }
         }

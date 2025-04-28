@@ -387,4 +387,8 @@ public class Player {
 		movingRight = false;
 	}
 
+	public Rectangle getHitbox() {
+		return new Rectangle(x, y, hitboxWidth, hitboxHeight); // Return the hitbox as a rectangle
+	}
+
 }
