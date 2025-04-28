@@ -106,6 +106,10 @@ public class TileMap {
         return offsetY;
     }
 
+    public int getCoinCounter() {
+        return coinCounter;
+    }
+
     public void addCoin(Coin coin) {
         coins.add(coin);
     }

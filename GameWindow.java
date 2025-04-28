@@ -177,6 +177,8 @@ public class GameWindow extends JFrame implements
 
 		// Graphics2D g2 = (Graphics2D) getGraphics(); // get the graphics context for
 		// window
+
+		drawCoinCounter(imageContext); // draw the coin counter
 		drawButtons(imageContext); // draw the buttons
 
 		Graphics2D g2 = (Graphics2D) gScr;
@@ -366,6 +368,23 @@ public class GameWindow extends JFrame implements
 
 	}
 
+	private void drawCoinCounter(Graphics2D g2) {
+		int coinCount = tileMap.getCoinCounter(); // Get the current coin count
+		Image coinImage = ImageManager.loadImage("images/coin/coin_1.png"); // Use the first coin image as the icon
+
+		// Set the position for the coin counter
+		int x = pWidth - 150; // 150 pixels from the right edge
+		int y = 20; // 20 pixels from the top edge
+
+		// Draw the coin count text
+		g2.setFont(new Font("Arial", Font.BOLD, 24));
+		g2.setColor(Color.WHITE);
+		g2.drawString(coinCount + " x", x, y + 24);
+
+		// Draw the coin image next to the text
+		g2.drawImage(coinImage, x + 60, y, 32, 32, null);
+	}
+	
 	private void startGame() {
 		if (gameThread == null) {
 			// soundManager.playSound ("background", true);
