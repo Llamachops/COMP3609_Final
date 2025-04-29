@@ -1,7 +1,9 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JPanel;
@@ -49,6 +51,11 @@ public class Player {
 
 	private boolean inAir;
 	private int initialVelocity;
+    
+    private boolean isAttacking = false;
+    private int attackDamage = 25; // Default damage
+    private long attackCooldown = 500; // Cooldown in milliseconds
+    private long lastAttackTime = 0;
 
 	public Player(JFrame window, TileMap t, BackgroundManager b) {
 		this.window = window;
@@ -70,20 +77,25 @@ public class Player {
 
 	public void loadAnimations() {
 		// Load animations for different actions
-		animations.put("idle", createAnimation("images/knight/idle/idle", 10, 100));
-		animations.put("run", createAnimation("images/knight/run/run", 10, 100));
-		animations.put("jump", createAnimation("images/knight/jump/jump", 10, 100));
-		animations.put("hurt", createAnimation("images/knight/hurt/hurt", 10, 100));
-		animations.put("attack", createAnimation("images/knight/attack/attack", 10, 100));
-		animations.put("die", createAnimation("images/knight/die/die", 10, 100));
+		animations.put("idle", createAnimation("images/knight/idle/idle", 10, 100, true));
+		animations.put("run", createAnimation("images/knight/run/run", 10, 100, true));
+		animations.put("jump", createAnimation("images/knight/jump/jump", 10, 100, false));
+		animations.put("hurt", createAnimation("images/knight/hurt/hurt", 10, 100, false));
+		animations.put("attack", createAnimation("images/knight/attack/attack", 10, 50, false));
+		animations.put("die", createAnimation("images/knight/die/die", 10, 100, false));
 	}
 
-	private Animation createAnimation(String filePath, int numFrames, int duration) {
-		Animation animation = new Animation(true);
+	private Animation createAnimation(String filePath, int numFrames, int duration, boolean loop) {
+		Animation animation = new Animation(loop);
 		for (int i = 1; i <= numFrames; i++) {
 			String filename = filePath + i + ".png";
 			Image originalImage = ImageManager.loadImage(filename);
 			Image scaledImage = originalImage.getScaledInstance(SCALED_WIDTH, SCALED_HEIGHT, Image.SCALE_SMOOTH);
+
+			// Force the image to load into memory to prevent flickering
+			scaledImage.getWidth(null);
+			scaledImage.getHeight(null);
+
 			animation.addFrame(scaledImage, duration);
 		}
 		return animation;
@@ -172,7 +184,6 @@ public class Player {
 			movingLeft = true;
 			movingRight = false;
 			facingLeft = true;
-			currentAnimation = animations.get("run"); // Set animation to run
 			newX = x - DX;
 			if (newX < 0) {
 				x = 0;
@@ -184,7 +195,6 @@ public class Player {
 			movingLeft = false;
 			movingRight = true;
 			facingLeft = false;
-			currentAnimation = animations.get("run"); // Set animation to run
 			int playerWidth = hitboxWidth;
 			newX = x + DX;
 
@@ -199,7 +209,6 @@ public class Player {
 		} else // jump
 		if (direction == 3 && !jumping) {
 			jumping = true;
-			currentAnimation = animations.get("jump"); // Set animation to jump
 			jump();
 			return;
 		}
@@ -284,9 +293,7 @@ public class Player {
 		int newY = 0;
 
 		timeElapsed++;
-		String newState = currentState;
 		if (jumping || inAir) {
-			newState = "jump"; // Set animation to jump
 			distance = (int) (initialVelocity * timeElapsed -
 					4.9 * timeElapsed * timeElapsed);
 			newY = startY - distance;
@@ -299,7 +306,7 @@ public class Player {
 			if (goingUp) {
 				Point tilePos = collidesWithTileUp(x, newY);
 				if (tilePos != null) { // hits a tile going up
-					System.out.println("Jumping: Collision Going Up!");
+					// System.out.println("Jumping: Collision Going Up!");
 
 					int offsetY = tileMap.getOffsetY();
 					int topTileY = ((int) tilePos.getY()) * TILE_SIZE + offsetY;
@@ -314,7 +321,7 @@ public class Player {
 			} else if (goingDown) {
 				Point tilePos = collidesWithTileDown(x, newY);
 				if (tilePos != null) { // hits a tile going down
-					System.out.println("Jumping: Collision Going Down!");
+					// System.out.println("Jumping: Collision Going Down!");
 					int playerHeight = hitboxHeight;
 					goingDown = false;
 
@@ -329,17 +336,37 @@ public class Player {
 					// System.out.println("Jumping: No collision.");
 				}
 			}
+		}
+		
+		if (isAttacking) {
+			if (!animations.get("attack").isStillActive()) {
+				isAttacking = false;
+			} else {
+				currentAnimation.update();
+				return;
+			}
+		}
+
+		String newState;
+		if (jumping || inAir) {
+			newState = "jump";
 		} else if (movingLeft || movingRight) {
 			newState = "run"; // Set animation to run
 		} else {
 			newState = "idle"; // Set animation to idle
 		}
-		if (!currentState.equals(newState)) {
+
+		if (!newState.equals(currentState)) {
 			currentState = newState;
 			currentAnimation = animations.get(currentState); // Set the new animation
 			currentAnimation.start(); // Start the new animation
 		}
-		currentAnimation.update(); // Update the current animation
+
+		if (currentAnimation.isStillActive()) {
+			currentAnimation.update(); // Update the current animation
+		} else {
+			currentAnimation.start(); // Restart the animation if it has finished
+		}
 	}
 
 	public void moveUp() {
@@ -391,4 +418,36 @@ public class Player {
 		return new Rectangle(x, y, hitboxWidth, hitboxHeight); // Return the hitbox as a rectangle
 	}
 
+	public void attack(ArrayList<Enemy> enemies) {
+	    long currentTime = System.currentTimeMillis();
+	    if (currentTime - lastAttackTime < attackCooldown) {
+	        return; // Prevent attacking if still on cooldown
+	    }
+
+	    lastAttackTime = currentTime;
+	    isAttacking = true;
+	    currentState = "attack";
+	    currentAnimation = animations.get(currentState);
+	    currentAnimation.start();
+
+	    // Define the attack hitbox
+	    int attackWidth = 150; // Length of the attack range
+	    int attackHeight = 50; // Height of the attack range
+	    int attackX = isFacingLeft() ? getX() - attackWidth : getX() + getHitboxWidth();
+	    int attackY = getY() + (getHitboxHeight() - attackHeight) / 2;
+
+	    Rectangle attackHitbox = new Rectangle(attackX, attackY, attackWidth, attackHeight);
+		
+	    // Check for enemies in range
+	    for (Enemy enemy : enemies) {
+	        if (enemy.isAlive() && attackHitbox.intersects(enemy.getHitbox())) {
+	            // Calculate damage with a 20% chance for critical hit
+	            float damage = attackDamage;
+	            if (Math.random() < 0.2) {
+	                damage *= 2; // Critical hit
+	            }
+	            enemy.takeDamage(damage);
+	        }
+	    }
+	}
 }

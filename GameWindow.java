@@ -467,6 +467,7 @@ public class GameWindow extends JFrame implements
 
 	// implementation of methods in KeyListener interface
 
+	@Override
 	public void keyPressed(KeyEvent e) {
 
 		if (isPaused)
@@ -484,12 +485,13 @@ public class GameWindow extends JFrame implements
 			movingRight = true;
 		}
 
-		if ((keyCode == KeyEvent.VK_SPACE) || (keyCode == KeyEvent.VK_UP)) {
+		if ((keyCode == KeyEvent.VK_UP)) {
 			tileMap.jump();
-		} else if (keyCode == KeyEvent.VK_DOWN) {
-			// bat.moveDown();
 		}
 
+		if (keyCode == KeyEvent.VK_SPACE) {
+			tileMap.getPlayer().attack(tileMap.getEnemies());
+    	}
 	}
 
 	public void keyReleased(KeyEvent e) {

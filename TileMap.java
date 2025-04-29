@@ -1,5 +1,4 @@
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,8 +17,6 @@ import javax.swing.JFrame;
 public class TileMap {
 
     static final int TILE_SIZE = 128;
-    private static final int TILE_SIZE_BITS = 6;
-
     private Image[][] tiles;
 
     private ArrayList<Coin> coins; // List of coins in the map
@@ -269,25 +266,11 @@ public class TileMap {
     }
 
     public void moveLeft() {
-        int x, y;
-        x = player.getX();
-        y = player.getY();
-
-        String mess = "Going left. x = " + x + " y = " + y;
-        // System.out.println(mess);
-
         player.move(1);
 
     }
 
     public void moveRight() {
-        int x, y;
-        x = player.getX();
-        y = player.getY();
-
-        String mess = "Going right. x = " + x + " y = " + y;
-        // System.out.println(mess);
-
         player.move(2);
 
     }
@@ -297,13 +280,6 @@ public class TileMap {
     }
 
     public void jump() {
-        int x, y;
-        x = player.getX();
-        y = player.getY();
-
-        String mess = "Jumping. x = " + x + " y = " + y;
-        // System.out.println(mess);
-
         player.move(3);
 
     }
@@ -316,8 +292,6 @@ public class TileMap {
         offsetX = Math.min(offsetX, 0);
         offsetX = Math.max(offsetX, screenWidth - tilesToPixels(mapWidth));
 
-        int offsetY = this.offsetY;
-
         // Check for coin collection
         for (Coin coin : coins) {
             if (!coin.isCollected() && player.getHitbox().intersects(coin.getHitbox())) {
@@ -329,13 +303,25 @@ public class TileMap {
         }
 
         // Update trolls
-        for (Troll troll : trolls) {
+        Iterator<Troll> trollIterator = trolls.iterator();
+        while (trollIterator.hasNext()) {
+            Troll troll = trollIterator.next();
             troll.update();
+            if (troll.isDead()) {
+                trollIterator.remove();
+                System.out.println("Troll removed!");
+            }
         }
 
         // Update fairies
-        for (Fairy fairy : fairies) {
+        Iterator<Fairy> fairyIterator = fairies.iterator();
+        while (fairyIterator.hasNext()) {
+            Fairy fairy = fairyIterator.next();
             fairy.update();
+            if (fairy.isDead()) {
+                fairyIterator.remove();
+                System.out.println("Fairy removed!");
+            }
         }
 
         // Update projectiles
@@ -344,9 +330,9 @@ public class TileMap {
             Projectile projectile = projectileIterator.next();
             projectile.update();
             if (!projectile.isActive()) {
-                System.out.println("Projectile being removed!");
-                projectileIterator.remove(); // Remove inactive projectiles
-                System.out.println("Projectile removed!");
+                // System.out.println("Projectile being removed!");
+                projectileIterator.remove();
+                // System.out.println("Projectile removed!");
             }
         }
     }
@@ -399,5 +385,12 @@ public class TileMap {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        ArrayList<Enemy> enemies = new ArrayList<>();
+        enemies.addAll(trolls);
+        enemies.addAll(fairies);
+        return enemies;
     }
 }

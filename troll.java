@@ -1,7 +1,8 @@
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
 
-public class Troll {
+public class Troll implements Enemy{
 
     private static final int TILE_SIZE = 128;
     private static final int SCALED_WIDTH = 300;
@@ -19,13 +20,14 @@ public class Troll {
 
     private long lastAttackTime = 0;
 
-    private Animation idleAnimation;
-    private Animation runAnimation;
-    private Animation attackAnimation;
+    private HashMap<String, Animation> animations;
     private Animation currentAnimation;
 
     private TileMap tileMap;
     private Player player;
+    private float health = 100; // Default health
+    private boolean alive = true;
+    private boolean dead = false;
 
     public Troll(int x, int y, TileMap tileMap, Player player) {
         this.x = x;
@@ -33,15 +35,15 @@ public class Troll {
         this.tileMap = tileMap;
         this.player = player;
 
+        animations = new HashMap<>();
         loadAnimations();
-        currentAnimation = idleAnimation;
-        currentAnimation.start();
     }
 
     private void loadAnimations() {
-        idleAnimation = createAnimation("images/troll/idle/idle", 10, 100, true);
-        runAnimation = createAnimation("images/troll/run/run", 10, 100, true);
-        attackAnimation = createAnimation("images/troll/attack/attack", 10, 100, false);
+        animations.put("idle", createAnimation("images/troll/idle/idle", 10, 100, true));
+        animations.put("run", createAnimation("images/troll/run/run", 10, 100, true));
+        animations.put("attack", createAnimation("images/troll/attack/attack", 10, 100, false));
+        animations.put("die", createAnimation("images/troll/die/die", 10, 100, false));
     }
 
     private Animation createAnimation(String filePath, int numFrames, int duration, boolean loop) {
@@ -50,16 +52,29 @@ public class Troll {
             String filename = filePath + i + ".png";
             Image originalImage = ImageManager.loadImage(filename);
             Image scaledImage = originalImage.getScaledInstance(SCALED_WIDTH, SCALED_HEIGHT, Image.SCALE_SMOOTH);
+            
+			// Force the image to load into memory to prevent flickering
+			scaledImage.getWidth(null);
+			scaledImage.getHeight(null);
+
             animation.addFrame(scaledImage, duration);
         }
         return animation;
     }
 
     public void update() {
+        if (!alive) {
+            currentAnimation.update();
+            if (!currentAnimation.isStillActive()) {
+                dead = true;
+            }
+            return;
+        }
+
         if (isAttacking) {
             if (!currentAnimation.isStillActive()) {
                 isAttacking = false;
-                currentAnimation = idleAnimation;
+                currentAnimation = animations.get("idle");
                 currentAnimation.start();
             }
             currentAnimation.update(); // Ensure the attack animation updates
@@ -74,7 +89,7 @@ public class Troll {
             if (currentTime - lastAttackTime >= ATTACK_COOLDOWN) {
                 lastAttackTime = currentTime;
                 isAttacking = true;
-                currentAnimation = attackAnimation;
+                currentAnimation = animations.get("attack");
                 currentAnimation.start();
                 tileMap.changeNumLives(-1); // Reduce player's lives
             }
@@ -95,8 +110,8 @@ public class Troll {
             if (hasGroundBelow && !isAtEdge) {
                 isRunning = true;
 
-                if (currentAnimation != runAnimation) {
-                    currentAnimation = runAnimation;
+                if (currentAnimation != animations.get("run")) {
+                    currentAnimation = animations.get("run");
                     currentAnimation.start();
                 }
 
@@ -113,8 +128,8 @@ public class Troll {
         }
 
         // Switch to idle animation if not running
-        if (!isRunning && currentAnimation != idleAnimation) {
-            currentAnimation = idleAnimation;
+        if (currentAnimation == null || (!isRunning && currentAnimation != animations.get("idle"))) {
+            currentAnimation = animations.get("idle");
             currentAnimation.start();
         }
 
@@ -172,6 +187,30 @@ public class Troll {
         g2.drawRect(x + offsetX, y, hitboxWidth, hitboxHeight);
     }
 
+    @Override
+    public void takeDamage(float damage) {
+        if (!alive || dead) return;
+
+        health -= damage;
+        if (health <= 0 && alive) {
+            health = 0;
+            alive = false;
+            currentAnimation = animations.get("die");
+            currentAnimation.start();
+        }
+    }
+
+    @Override
+    public boolean isAlive() {
+        return alive;
+    }
+
+    @Override
+    public boolean isDead() {
+        return dead;
+    }
+
+    @Override
     public Rectangle getHitbox() {
         return new Rectangle(x, y, hitboxWidth, hitboxHeight);
     }

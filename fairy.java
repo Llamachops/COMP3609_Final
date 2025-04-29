@@ -1,9 +1,9 @@
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 
-public class Fairy {
+public class Fairy implements Enemy{
 
-    private static final int TILE_SIZE = 128;
     private static final int SCALED_WIDTH = 300;
     private static final int SCALED_HEIGHT = 225;
     private static final int ATTACK_COOLDOWN = 4000; // 5 seconds in milliseconds
@@ -16,8 +16,7 @@ public class Fairy {
 
     private long lastAttackTime = 0;
 
-    private Animation idleAnimation;
-    private Animation attackAnimation;
+    private HashMap<String, Animation> animations;
     private Animation currentAnimation;
 
     private TileMap tileMap;
@@ -25,7 +24,9 @@ public class Fairy {
 
     private Point2D.Float controlPoint1, controlPoint2, startPoint, endPoint;
     private float t = 0; // Parameter for cubic Bezier curve
-    private boolean movingUp = true;
+    private float health = 100; // Default health
+    private boolean alive = true;
+    private boolean dead = false;
 
     public Fairy(int x, int y, TileMap tileMap, Player player) {
         this.x = x;
@@ -33,20 +34,20 @@ public class Fairy {
         this.tileMap = tileMap;
         this.player = player;
 
+        animations = new HashMap<>();
         loadAnimations();
-        currentAnimation = idleAnimation;
-        currentAnimation.start();
 
         // Define the cubic Bezier curve points
         startPoint = new Point2D.Float(x, y);
-        endPoint = new Point2D.Float(x, y + 50); // Move 50 pixels down
-        controlPoint1 = new Point2D.Float(x - 30, y + 25); // Control points for the curve
-        controlPoint2 = new Point2D.Float(x + 30, y + 25);
+        endPoint = startPoint;
+        controlPoint1 = new Point2D.Float(x, y + 75);
+        controlPoint2 = new Point2D.Float(x, y - 75);
     }
 
     private void loadAnimations() {
-        idleAnimation = createAnimation("images/fairy/fly/fly", 10, 100, true);
-        attackAnimation = createAnimation("images/fairy/fly_attack/fly_attack", 10, 100, false);
+        animations.put("idle", createAnimation("images/fairy/fly/fly", 10, 100, true));
+        animations.put("fly_attack", createAnimation("images/fairy/fly_attack/fly_attack", 10, 100, false));
+        animations.put("die", createAnimation("images/fairy/die/die", 10, 100, false));
     }
 
     private Animation createAnimation(String filePath, int numFrames, int duration, boolean loop) {
@@ -55,6 +56,11 @@ public class Fairy {
             String filename = filePath + i + ".png";
             Image originalImage = ImageManager.loadImage(filename);
             Image scaledImage = originalImage.getScaledInstance(SCALED_WIDTH, SCALED_HEIGHT, Image.SCALE_SMOOTH);
+
+			// Force the image to load into memory to prevent flickering
+			scaledImage.getWidth(null);
+			scaledImage.getHeight(null);
+
             animation.addFrame(scaledImage, duration);
         }
         return animation;
@@ -62,18 +68,9 @@ public class Fairy {
 
     public void update() {
         // Update Bezier curve movement
-        if (movingUp) {
-            t += 0.01f; // Move up
-            if (t >= 1) {
-                t = 1;
-                movingUp = false;
-            }
-        } else {
-            t -= 0.01f; // Move down
-            if (t <= 0) {
-                t = 0;
-                movingUp = true;
-            }
+        t += 0.01f;
+        if (t > 1) {
+            t = 0;
         }
 
         // Calculate the new position along the cubic Bezier curve
@@ -90,6 +87,14 @@ public class Fairy {
         x = (int) newX;
         y = (int) newY;
 
+        if (!alive) {
+            currentAnimation.update();
+            if (!currentAnimation.isStillActive()) {
+                dead = true;
+            }
+            return;
+        }
+
         // Check if the player is in range
         int range = 400; // Range within which the fairy can attack
         int dx = player.getX() - x;
@@ -101,14 +106,14 @@ public class Fairy {
             if (currentTime - lastAttackTime >= ATTACK_COOLDOWN) {
                 lastAttackTime = currentTime;
                 fireProjectile();
-                currentAnimation = attackAnimation;
+                currentAnimation = animations.get("fly_attack");
                 currentAnimation.start();
             }
         }
 
         // Update the animation
-        if (!currentAnimation.isStillActive()) {
-            currentAnimation = idleAnimation;
+        if (currentAnimation==null || !currentAnimation.isStillActive()) {
+            currentAnimation = animations.get("idle");
             currentAnimation.start();
         }
 
@@ -120,11 +125,11 @@ public class Fairy {
 
     private void fireProjectile() {
         System.out.println("Fairy fires a projectile!");
-        int projectileSpeed = 20; // Speed of the projectile
+        int projectileSpeed = 15; // Speed of the projectile
         int maxDistance = 700; // Maximum distance the projectile can travel
 
         // Create a new projectile
-        Projectile projectile = new Projectile(x, y, player.getX(), player.getY(), tileMap, "images/collectibles/Light.png", projectileSpeed, maxDistance);
+        Projectile projectile = new Projectile(x + (hitboxWidth/2), y, player.getX(), player.getY(), tileMap, "images/collectibles/Light.png", projectileSpeed, maxDistance);
         tileMap.addProjectile(projectile);
     }
 
@@ -146,6 +151,30 @@ public class Fairy {
         g2.drawRect(x + offsetX, y, hitboxWidth, hitboxHeight);
     }
 
+    @Override
+    public void takeDamage(float damage) {
+        if (!alive || dead) return;
+
+        health -= damage;
+        if (health <= 0 && alive) {
+            health = 0;
+            alive = false;
+            currentAnimation = animations.get("die");
+            currentAnimation.start();
+        }
+    }
+
+    @Override
+    public boolean isAlive() {
+        return alive;
+    }
+
+    @Override
+    public boolean isDead() {
+        return dead;
+    }
+
+    @Override
     public Rectangle getHitbox() {
         return new Rectangle(x, y, hitboxWidth, hitboxHeight);
     }
