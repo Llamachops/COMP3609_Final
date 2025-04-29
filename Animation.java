@@ -122,4 +122,8 @@ public class Animation {
         }
     }
 
+    public float getCurrentFrameIndex() {
+        return currFrameIndex;
+    }
+
 }

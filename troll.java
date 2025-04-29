@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 
 public class Troll implements Enemy{
@@ -170,6 +169,10 @@ public class Troll implements Enemy{
     }
 
     public void draw(Graphics2D g2, int offsetX, int offsetY) {
+        if (currentAnimation == null) {
+            currentAnimation = animations.get("idle");
+            currentAnimation.start();
+        };
         Image currentImage = currentAnimation.getImage();
         int hitboxCenterX = x + hitboxWidth / 2;
         int drawX = hitboxCenterX - SCALED_WIDTH / 2 + offsetX;

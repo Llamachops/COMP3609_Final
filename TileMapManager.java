@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 public class TileMapManager {
 
     private ArrayList<Image> tiles;
-    private int currentMap = 0;
+    // private int currentMap = 0;
 
     private JFrame window;
 

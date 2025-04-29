@@ -1,15 +1,11 @@
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.JPanel;
 import javax.swing.JFrame;
 import java.awt.Image;
-import javax.swing.ImageIcon;
 import java.awt.Point;
 
 public class Player {
@@ -32,11 +28,6 @@ public class Player {
     private HashMap<String, Animation> animations; // Store animations for actions
     private Animation currentAnimation;
 
-	Graphics2D g2;
-	private Dimension dimension;
-
-	private Image playerImage, playerLeftImage, playerRightImage;
-
 	private String currentState;
 	private boolean facingLeft;
 	private boolean jumping;
@@ -56,6 +47,7 @@ public class Player {
     private int attackDamage = 25; // Default damage
     private long attackCooldown = 500; // Cooldown in milliseconds
     private long lastAttackTime = 0;
+    private Rectangle attackHitbox = new Rectangle();
 
 	public Player(JFrame window, TileMap t, BackgroundManager b) {
 		this.window = window;
@@ -103,10 +95,9 @@ public class Player {
 
 	public Point collidesWithTile(int newX, int newY) {
 
-		int playerWidth = hitboxWidth;
-		int offsetY = tileMap.getOffsetY();
-		int xTile = tileMap.pixelsToTiles(newX);
-		int yTile = tileMap.pixelsToTiles(newY - offsetY);
+		int offsetY = TileMap.getOffsetY();
+		int xTile = TileMap.pixelsToTiles(newX);
+		int yTile = TileMap.pixelsToTiles(newY - offsetY);
 
 		if (tileMap.getTile(xTile, yTile) != null) {
 			Point tilePos = new Point(xTile, yTile);
@@ -120,10 +111,10 @@ public class Player {
 
 		int playerWidth = hitboxWidth;
 		int playerHeight = hitboxHeight;
-		int offsetY = tileMap.getOffsetY();
-		int xTile = tileMap.pixelsToTiles(newX);
-		int yTileFrom = tileMap.pixelsToTiles(y - offsetY);
-		int yTileTo = tileMap.pixelsToTiles(newY - offsetY + playerHeight);
+		int offsetY = TileMap.getOffsetY();
+		int xTile = TileMap.pixelsToTiles(newX);
+		int yTileFrom = TileMap.pixelsToTiles(y - offsetY);
+		int yTileTo = TileMap.pixelsToTiles(newY - offsetY + playerHeight);
 
 		for (int yTile = yTileFrom; yTile <= yTileTo; yTile++) {
 			if (tileMap.getTile(xTile, yTile) != null) {
@@ -147,11 +138,11 @@ public class Player {
 
 		int playerWidth = hitboxWidth;
 
-		int offsetY = tileMap.getOffsetY();
-		int xTile = tileMap.pixelsToTiles(newX);
+		int offsetY = TileMap.getOffsetY();
+		int xTile = TileMap.pixelsToTiles(newX);
 
-		int yTileFrom = tileMap.pixelsToTiles(y - offsetY);
-		int yTileTo = tileMap.pixelsToTiles(newY - offsetY);
+		int yTileFrom = TileMap.pixelsToTiles(y - offsetY);
+		int yTileTo = TileMap.pixelsToTiles(newY - offsetY);
 
 		for (int yTile = yTileFrom; yTile >= yTileTo; yTile--) {
 			if (tileMap.getTile(xTile, yTile) != null) {
@@ -308,7 +299,7 @@ public class Player {
 				if (tilePos != null) { // hits a tile going up
 					// System.out.println("Jumping: Collision Going Up!");
 
-					int offsetY = tileMap.getOffsetY();
+					int offsetY = TileMap.getOffsetY();
 					int topTileY = ((int) tilePos.getY()) * TILE_SIZE + offsetY;
 					int bottomTileY = topTileY + TILE_SIZE;
 
@@ -325,7 +316,7 @@ public class Player {
 					int playerHeight = hitboxHeight;
 					goingDown = false;
 
-					int offsetY = tileMap.getOffsetY();
+					int offsetY = TileMap.getOffsetY();
 					int topTileY = ((int) tilePos.getY()) * TILE_SIZE + offsetY;
 
 					y = topTileY - playerHeight;
@@ -436,8 +427,8 @@ public class Player {
 	    int attackX = isFacingLeft() ? getX() - attackWidth : getX() + getHitboxWidth();
 	    int attackY = getY() + (getHitboxHeight() - attackHeight) / 2;
 
-	    Rectangle attackHitbox = new Rectangle(attackX, attackY, attackWidth, attackHeight);
-		
+	    attackHitbox.setBounds(attackX, attackY, attackWidth, attackHeight);
+
 	    // Check for enemies in range
 	    for (Enemy enemy : enemies) {
 	        if (enemy.isAlive() && attackHitbox.intersects(enemy.getHitbox())) {
@@ -448,6 +439,65 @@ public class Player {
 	            }
 	            enemy.takeDamage(damage);
 	        }
+	    }
+	}
+
+	public void draw(Graphics2D g2, int offsetX, int offsetY) {
+	    Image playerAnimImage = currentAnimation.getImage();
+	    int animWidth = playerAnimImage.getWidth(null);
+	    int animHeight = playerAnimImage.getHeight(null);
+
+	    int drawX = x + (hitboxWidth - animWidth) / 2 + offsetX;
+	    int drawY = y + (hitboxHeight - animHeight) / 2 + 10;
+
+	    if (facingLeft) {
+	        g2.drawImage(playerAnimImage, drawX + animWidth, drawY, -animWidth, animHeight, null);
+	    } else {
+	        g2.drawImage(playerAnimImage, drawX, drawY, animWidth, animHeight, null);
+	    }
+
+	    // Draw player hitbox for debugging
+	    g2.setColor(Color.BLUE);
+	    g2.drawRect(
+	        x + offsetX, // Apply horizontal scroll offset
+	        y,           // No vertical scroll offset needed for player
+	        hitboxWidth,
+	        hitboxHeight
+	    );
+
+	    // Draw the attack effect as a moving gray triangle
+	    if (isAttacking) {
+	        // Calculate the progress of the attack animation (0.0 to 1.0)
+	        float progress = (float) currentAnimation.getCurrentFrameIndex() / currentAnimation.getNumFrames();
+
+	        // Calculate the triangle's position based on the progress
+	        int triangleXStart = attackHitbox.x + offsetX;
+	        int triangleXEnd = attackHitbox.x + attackHitbox.width + offsetX;
+	        int triangleX;
+
+	        if (facingLeft) {
+	            // Move the triangle from right to left when facing left
+	            triangleX = (int) (triangleXEnd - progress * (triangleXEnd - triangleXStart));
+	        } else {
+	            // Move the triangle from left to right when facing right
+	            triangleX = (int) (triangleXStart + progress * (triangleXEnd - triangleXStart));
+	        }
+
+	        int triangleYTop = attackHitbox.y;
+	        int triangleYBottom = attackHitbox.y + attackHitbox.height;
+
+	        // Draw the triangle
+	        g2.setColor(Color.GRAY);
+	        int[] xPoints;
+	        int[] yPoints = {triangleYTop, triangleYBottom, (triangleYTop + triangleYBottom) / 2};
+
+	        if (facingLeft) {
+	            xPoints = new int[]{triangleX, triangleX, triangleX - 20}; // Triangle points for left-facing attack
+	        } else {
+	            xPoints = new int[]{triangleX, triangleX, triangleX + 20}; // Triangle points for right-facing attack
+	        }
+
+	        g2.fillPolygon(xPoints, yPoints, 3);
 	    }
 	}
 }

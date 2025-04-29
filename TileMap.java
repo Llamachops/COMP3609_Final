@@ -170,9 +170,7 @@ public class TileMap {
     public void draw(Graphics2D g2) {
         int mapWidthPixels = tilesToPixels(mapWidth);
 
-        // get the scrolling position of the map
-        // based on player's position
-
+        // get the scrolling position of the map based on player's position
         int offsetX = screenWidth / 2 - Math.round(player.getX()) - TILE_SIZE;
         offsetX = Math.min(offsetX, 0);
         offsetX = Math.max(offsetX, screenWidth - mapWidthPixels);
@@ -180,7 +178,6 @@ public class TileMap {
         bgManager.draw(g2);
 
         // draw the visible tiles
-
         int firstTileX = pixelsToTiles(-offsetX);
         int lastTileX = firstTileX + pixelsToTiles(screenWidth) + 1;
         for (int y = 0; y < mapHeight; y++) {
@@ -200,34 +197,8 @@ public class TileMap {
             }
         }
 
-        // draw player
-        Image playerAnimImage = player.getCurrentAnimImage();
-        int animWidth = playerAnimImage.getWidth(null);
-        int animHeight = playerAnimImage.getHeight(null);
-        int playerHitboxWidth = player.getHitboxWidth();
-        int playerHitboxHeight = player.getHitboxHeight();
-        int playerX = player.getX();
-        int playerY = player.getY();
-
-        int drawX = playerX + (playerHitboxWidth - animWidth) / 2;
-        int drawY = playerY + (playerHitboxHeight - animHeight) / 2 + 10;
-
-        if (player.isFacingLeft()) {
-            g2.drawImage(playerAnimImage, drawX + animWidth + offsetX,
-                    drawY, -animWidth, animHeight, null);
-        } else {
-            g2.drawImage(playerAnimImage, drawX + offsetX, drawY, null);
-        }
-
-        // Draw player hitbox for debugging
-        // TODO: Remove this in production code
-        Rectangle hitbox = player.getHitbox();
-        g2.setColor(Color.BLUE);
-        g2.drawRect(
-                hitbox.x + offsetX, // Apply horizontal scroll offset
-                hitbox.y, // No vertical scroll offset needed for player
-                hitbox.width,
-                hitbox.height);
+        // Draw the player
+        player.draw(g2, offsetX, offsetY);
 
         // Draw coins
         for (Coin coin : coins) {

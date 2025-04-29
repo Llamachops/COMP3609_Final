@@ -26,12 +26,7 @@ public class BackgroundManager {
 	private Background[] backgrounds;
 	private int numBackgrounds;
 
-	private JFrame window; // JFrame on which backgrounds are drawn
-
 	public BackgroundManager(JFrame window, int moveSize) {
-		// ignore moveSize
-		this.window = window;
-
 		numBackgrounds = bgImages.length;
 		backgrounds = new Background[numBackgrounds];
 
