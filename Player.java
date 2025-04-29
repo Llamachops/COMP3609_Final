@@ -25,14 +25,14 @@ public class Player {
 	private int hitboxWidth = 32; // width of the hitbox
 	private int hitboxHeight = 64; // height of the hitbox
 
-    private HashMap<String, Animation> animations; // Store animations for actions
-    private Animation currentAnimation;
+	private HashMap<String, Animation> animations; // Store animations for actions
+	private Animation currentAnimation;
 
 	private String currentState;
 	private boolean facingLeft;
 	private boolean jumping;
-    private boolean movingLeft;
-    private boolean movingRight;
+	private boolean movingLeft;
+	private boolean movingRight;
 
 	private int timeElapsed;
 	private int startY;
@@ -42,12 +42,14 @@ public class Player {
 
 	private boolean inAir;
 	private int initialVelocity;
-    
-    private boolean isAttacking = false;
-    private int attackDamage = 25; // Default damage
-    private long attackCooldown = 500; // Cooldown in milliseconds
-    private long lastAttackTime = 0;
-    private Rectangle attackHitbox = new Rectangle();
+
+	private boolean isAttacking = false;
+	private int attackDamage = 25; // Default damage
+	private long attackCooldown = 500; // Cooldown in milliseconds
+	private long lastAttackTime = 0;
+	private Rectangle attackHitbox = new Rectangle();
+	private float critMultiplier = 2.0f;
+	private float critChance = 0.2f;
 
 	public Player(JFrame window, TileMap t, BackgroundManager b) {
 		this.window = window;
@@ -64,7 +66,7 @@ public class Player {
 		currentState = "idle"; // Set the default state to idle
 		currentAnimation = animations.get(currentState); // Set the default animation to idle
 		currentAnimation.start(); // Start the idle animation
-		
+
 	}
 
 	public void loadAnimations() {
@@ -328,7 +330,7 @@ public class Player {
 				}
 			}
 		}
-		
+
 		if (isAttacking) {
 			if (!animations.get("attack").isStillActive()) {
 				isAttacking = false;
@@ -410,94 +412,105 @@ public class Player {
 	}
 
 	public void attack(ArrayList<Enemy> enemies) {
-	    long currentTime = System.currentTimeMillis();
-	    if (currentTime - lastAttackTime < attackCooldown) {
-	        return; // Prevent attacking if still on cooldown
-	    }
+		long currentTime = System.currentTimeMillis();
+		if (currentTime - lastAttackTime < attackCooldown) {
+			return; // Prevent attacking if still on cooldown
+		}
 
-	    lastAttackTime = currentTime;
-	    isAttacking = true;
-	    currentState = "attack";
-	    currentAnimation = animations.get(currentState);
-	    currentAnimation.start();
+		lastAttackTime = currentTime;
+		isAttacking = true;
+		currentState = "attack";
+		currentAnimation = animations.get(currentState);
+		currentAnimation.start();
 
-	    // Define the attack hitbox
-	    int attackWidth = 150; // Length of the attack range
-	    int attackHeight = 50; // Height of the attack range
-	    int attackX = isFacingLeft() ? getX() - attackWidth : getX() + getHitboxWidth();
-	    int attackY = getY() + (getHitboxHeight() - attackHeight) / 2;
+		// Define the attack hitbox
+		int attackWidth = 150; // Length of the attack range
+		int attackHeight = 50; // Height of the attack range
+		int attackX = isFacingLeft() ? getX() - attackWidth : getX() + getHitboxWidth();
+		int attackY = getY() + (getHitboxHeight() - attackHeight) / 2;
 
-	    attackHitbox.setBounds(attackX, attackY, attackWidth, attackHeight);
+		attackHitbox.setBounds(attackX, attackY, attackWidth, attackHeight);
 
-	    // Check for enemies in range
-	    for (Enemy enemy : enemies) {
-	        if (enemy.isAlive() && attackHitbox.intersects(enemy.getHitbox())) {
-	            // Calculate damage with a 20% chance for critical hit
-	            float damage = attackDamage;
-	            if (Math.random() < 0.2) {
-	                damage *= 2; // Critical hit
-	            }
-	            enemy.takeDamage(damage);
-	        }
-	    }
+		// Check for enemies in range
+		for (Enemy enemy : enemies) {
+			if (enemy.isAlive() && attackHitbox.intersects(enemy.getHitbox())) {
+				// Calculate damage with a 20% chance for critical hit
+				float damage = attackDamage;
+				if (Math.random() < critChance) {
+					damage *= critMultiplier; // Critical hit
+				}
+				enemy.takeDamage(damage);
+			}
+		}
 	}
 
 	public void draw(Graphics2D g2, int offsetX, int offsetY) {
-	    Image playerAnimImage = currentAnimation.getImage();
-	    int animWidth = playerAnimImage.getWidth(null);
-	    int animHeight = playerAnimImage.getHeight(null);
+		Image playerAnimImage = currentAnimation.getImage();
+		int animWidth = playerAnimImage.getWidth(null);
+		int animHeight = playerAnimImage.getHeight(null);
 
-	    int drawX = x + (hitboxWidth - animWidth) / 2 + offsetX;
-	    int drawY = y + (hitboxHeight - animHeight) / 2 + 10;
+		int drawX = x + (hitboxWidth - animWidth) / 2 + offsetX;
+		int drawY = y + (hitboxHeight - animHeight) / 2 + 10;
 
-	    if (facingLeft) {
-	        g2.drawImage(playerAnimImage, drawX + animWidth, drawY, -animWidth, animHeight, null);
-	    } else {
-	        g2.drawImage(playerAnimImage, drawX, drawY, animWidth, animHeight, null);
-	    }
+		if (facingLeft) {
+			g2.drawImage(playerAnimImage, drawX + animWidth, drawY, -animWidth, animHeight, null);
+		} else {
+			g2.drawImage(playerAnimImage, drawX, drawY, animWidth, animHeight, null);
+		}
 
-	    // Draw player hitbox for debugging
-	    g2.setColor(Color.BLUE);
-	    g2.drawRect(
-	        x + offsetX, // Apply horizontal scroll offset
-	        y,           // No vertical scroll offset needed for player
-	        hitboxWidth,
-	        hitboxHeight
-	    );
+		// Draw player hitbox for debugging
+		g2.setColor(Color.BLUE);
+		g2.drawRect(
+				x + offsetX, // Apply horizontal scroll offset
+				y, // No vertical scroll offset needed for player
+				hitboxWidth,
+				hitboxHeight);
 
-	    // Draw the attack effect as a moving gray triangle
-	    if (isAttacking) {
-	        // Calculate the progress of the attack animation (0.0 to 1.0)
-	        float progress = (float) currentAnimation.getCurrentFrameIndex() / currentAnimation.getNumFrames();
+		// Draw the attack effect as a moving gray triangle
+		if (isAttacking) {
+			// Calculate the progress of the attack animation (0.0 to 1.0)
+			float progress = (float) currentAnimation.getCurrentFrameIndex() / currentAnimation.getNumFrames();
 
-	        // Calculate the triangle's position based on the progress
-	        int triangleXStart = attackHitbox.x + offsetX;
-	        int triangleXEnd = attackHitbox.x + attackHitbox.width + offsetX;
-	        int triangleX;
+			// Calculate the triangle's position based on the progress
+			int triangleXStart = attackHitbox.x + offsetX;
+			int triangleXEnd = attackHitbox.x + attackHitbox.width + offsetX;
+			int triangleX;
 
-	        if (facingLeft) {
-	            // Move the triangle from right to left when facing left
-	            triangleX = (int) (triangleXEnd - progress * (triangleXEnd - triangleXStart));
-	        } else {
-	            // Move the triangle from left to right when facing right
-	            triangleX = (int) (triangleXStart + progress * (triangleXEnd - triangleXStart));
-	        }
+			if (facingLeft) {
+				// Move the triangle from right to left when facing left
+				triangleX = (int) (triangleXEnd - progress * (triangleXEnd - triangleXStart));
+			} else {
+				// Move the triangle from left to right when facing right
+				triangleX = (int) (triangleXStart + progress * (triangleXEnd - triangleXStart));
+			}
 
-	        int triangleYTop = attackHitbox.y;
-	        int triangleYBottom = attackHitbox.y + attackHitbox.height;
+			int triangleYTop = attackHitbox.y;
+			int triangleYBottom = attackHitbox.y + attackHitbox.height;
 
-	        // Draw the triangle
-	        g2.setColor(Color.GRAY);
-	        int[] xPoints;
-	        int[] yPoints = {triangleYTop, triangleYBottom, (triangleYTop + triangleYBottom) / 2};
+			// Draw the triangle
+			g2.setColor(Color.GRAY);
+			int[] xPoints;
+			int[] yPoints = { triangleYTop, triangleYBottom, (triangleYTop + triangleYBottom) / 2 };
 
-	        if (facingLeft) {
-	            xPoints = new int[]{triangleX, triangleX, triangleX - 20}; // Triangle points for left-facing attack
-	        } else {
-	            xPoints = new int[]{triangleX, triangleX, triangleX + 20}; // Triangle points for right-facing attack
-	        }
+			if (facingLeft) {
+				xPoints = new int[] { triangleX, triangleX, triangleX - 20 }; // Triangle points for left-facing attack
+			} else {
+				xPoints = new int[] { triangleX, triangleX, triangleX + 20 }; // Triangle points for right-facing attack
+			}
 
-	        g2.fillPolygon(xPoints, yPoints, 3);
-	    }
+			g2.fillPolygon(xPoints, yPoints, 3);
+		}
+	}
+
+	public int getAttackDamage() {
+		return attackDamage;
+	}
+
+	public float getCritChance() {
+		return critChance; // Assume this is a float value between 0.0 and 1.0
+	}
+
+	public float getCritMultiplier() {
+		return critMultiplier; // Assume this is a float value (e.g., 2.0 for double damage)
 	}
 }

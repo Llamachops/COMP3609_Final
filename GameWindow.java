@@ -53,29 +53,30 @@ public class GameWindow extends JFrame implements
 	private Graphics gScr;
 	private BufferStrategy bufferStrategy;
 
+	private Font statsFont = new Font("Arial", Font.BOLD, 32);
 	private SoundManager soundManager;
 	TileMapManager tileManager;
 	TileMap tileMap;
 
 	void restartGame() {
 		isPaused = true; // Pause the game during the restart
-	
+
 		// Reset player lives and coin counter
 		tileMap.changeNumLives(3 - tileMap.getNumLives()); // Reset lives to 3
 		tileMap.setCoinCounter(0); // Reset coin counter
-	
+
 		// Reset player position
 		Player player = tileMap.getPlayer();
 		player.setX(192); // Reset player X position
 		player.setY(TileMap.tilesToPixels(tileMap.getHeight()) - TileMap.TILE_SIZE - player.getHitboxHeight());
-	
+
 		// Reload the map
 		try {
 			tileMap = tileManager.loadMap("maps/map1.txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
+
 		isPaused = false; // Resume the game
 	}
 
@@ -190,7 +191,6 @@ public class GameWindow extends JFrame implements
 	}
 
 	public void gameRender(Graphics gScr) { // draw the game objects
-
 		Graphics2D imageContext = (Graphics2D) image.getGraphics();
 
 		tileMap.draw(imageContext);
@@ -200,10 +200,8 @@ public class GameWindow extends JFrame implements
 		}
 		// imageEffect.draw(imageContext); // draw the image effect
 
-		// Graphics2D g2 = (Graphics2D) getGraphics(); // get the graphics context for
-		// window
-
 		drawLivesCounter(imageContext); // draw the lives counter
+		drawPlayerStats(imageContext); // draw the player's stats
 		drawCoinCounter(imageContext); // draw the coin counter
 		drawButtons(imageContext); // draw the buttons
 
@@ -403,8 +401,8 @@ public class GameWindow extends JFrame implements
 		int y = 20; // 20 pixels from the top edge
 
 		// Draw the coin count text
-		g2.setFont(new Font("Arial", Font.BOLD, 32));
-		g2.setColor(Color.WHITE);
+		g2.setFont(statsFont);
+		g2.setColor(Color.BLACK);
 		g2.drawString(coinCount + " x", x, y + 40);
 
 		// Draw the coin image next to the text
@@ -416,10 +414,32 @@ public class GameWindow extends JFrame implements
 		Image lifeImage = ImageManager.loadImage("images/collectibles/Life.png");
 		int x = 20; // 20 pixels from the left edge
 		int y = 20; // 20 pixels from the top edge
-	
+
 		for (int i = 0; i < lives; i++) {
-			g2.drawImage(lifeImage, x + (i * (lifeImage.getWidth(null) + 5)/2), y, 64, 64, null);
+			g2.drawImage(lifeImage, x + (i * (lifeImage.getWidth(null) + 5) / 2), y, 64, 64, null);
 		}
+	}
+
+	private void drawPlayerStats(Graphics2D g2) {
+		Player player = tileMap.getPlayer();
+
+		// Get player stats
+		int damage = player.getAttackDamage();
+		float critChance = player.getCritChance() * 100; // Convert to percentage
+		float critMultiplier = player.getCritMultiplier();
+
+		// Set the position for the stats
+		int x = 20; // 20 pixels from the left edge
+		int y = 120; // Start below the lives counter
+
+		// Set font and color
+		g2.setFont(statsFont);
+		g2.setColor(Color.BLACK);
+
+		// Draw the stats
+		g2.drawString("Damage: " + damage, x, y);
+		g2.drawString("Crit Odds: " + String.format("%.0f%%", critChance), x, y + 30);
+		g2.drawString("Crit Mult: " + String.format("%.1f", critMultiplier) + "x", x, y + 60);
 	}
 
 	private void startGame() {
@@ -491,7 +511,7 @@ public class GameWindow extends JFrame implements
 
 		if (keyCode == KeyEvent.VK_SPACE) {
 			tileMap.getPlayer().attack(tileMap.getEnemies());
-    	}
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {
