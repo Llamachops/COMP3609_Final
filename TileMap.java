@@ -70,12 +70,8 @@ public class TileMap {
 
         tiles = new Image[mapWidth][mapHeight];
         player = new Player(window, this, bgManager);
-        // sprites = new LinkedList();
-
-        int playerHeight = player.getHitboxHeight();
 
         int x, y;
-        // x = (dimension.width / 2) + TILE_SIZE; // position player in middle of screen
 
         x = 192; // position player
         y = 630;
@@ -236,7 +232,10 @@ public class TileMap {
             projectile.draw(g2, offsetX, offsetY);
         }
 
-        chest.draw(g2, offsetX, offsetY);
+        if (chest != null) {
+            // Draw the chest
+            chest.draw(g2, offsetX, offsetY);
+        }
     }
 
     public void moveLeft() {
@@ -259,7 +258,7 @@ public class TileMap {
     }
 
     public void update() {
-        if (chest.isOpened()) {
+        if (chest != null && chest.isOpened()) {
             triggerLevelComplete();
         }
 
@@ -347,7 +346,7 @@ public class TileMap {
         }
 
         // Call restartGame in GameWindow
-        ((GameWindow) window).restartGame();
+        ((GameWindow) window).restartLevel();
     }
 
     public void setCoinCounter(int value) {
@@ -379,6 +378,10 @@ public class TileMap {
 
     public void addChest(Chest chest) {
         this.chest = chest;
+    }
+
+    public void removeChest() {
+        this.chest = null;
     }
 
     private void triggerLevelComplete() {

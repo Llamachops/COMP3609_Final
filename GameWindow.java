@@ -59,7 +59,7 @@ public class GameWindow extends JFrame implements
 	TileMap tileMap;
 	private int level = 1; // Current level of the game
 
-	void restartGame() {
+	void restartLevel() {
 		isPaused = true; // Pause the game during the restart
 
 		// Reset player lives and coin counter
@@ -84,20 +84,41 @@ public class GameWindow extends JFrame implements
 	void changeLevel() {
 		isPaused = true;
 	    level++; // Increment the level count
+		tileMap.changeNumLives(3 - tileMap.getNumLives()); // Reset lives to 3
 	    try {
 	        // Attempt to load the next level
 	        tileMap = tileManager.loadMap("maps/map" + level + ".txt");
 	        System.out.println("Loaded map: maps/map" + level + ".txt");
 	    } catch (IOException e) {
 	        System.out.println("Failed to load map: maps/map" + level + ".txt");
-	        e.printStackTrace();
-	        // Optionally, handle the case where no more levels exist
-	        gameOverMessage(getGraphics());
-	        isRunning = false; // Stop the game if no more levels exist
+			restartGame();
 	    }
 		isPaused = false;
 	}
 	
+	private void restartGame() {
+		isPaused = true; // Pause the game during the restart
+		level = 1; // Reset to level 1 if the next level doesn't exist
+
+		// Reset player lives and coin counter
+		tileMap.changeNumLives(3 - tileMap.getNumLives()); // Reset lives to 3
+		tileMap.setCoinCounter(0); // Reset coin counter
+
+		// Reset player position
+		Player player = tileMap.getPlayer();
+		player.setX(192); // Reset player X position
+		player.setY(TileMap.tilesToPixels(tileMap.getHeight()) - TileMap.TILE_SIZE - player.getHitboxHeight());
+
+		// Reload the map
+		try {
+			tileMap = tileManager.loadMap("maps/map" + level + ".txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		isPaused = false; // Resume the game
+	}
+
 	public GameWindow() {
 
 		super("Tiled Bat and Ball Game: Full Screen Exclusive Mode");
