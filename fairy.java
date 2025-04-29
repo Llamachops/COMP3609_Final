@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 
-public class Fairy implements Enemy{
+public class Fairy implements Enemy {
 
     private static final int SCALED_WIDTH = 300;
     private static final int SCALED_HEIGHT = 225;
@@ -57,9 +57,9 @@ public class Fairy implements Enemy{
             Image originalImage = ImageManager.loadImage(filename);
             Image scaledImage = originalImage.getScaledInstance(SCALED_WIDTH, SCALED_HEIGHT, Image.SCALE_SMOOTH);
 
-			// Force the image to load into memory to prevent flickering
-			scaledImage.getWidth(null);
-			scaledImage.getHeight(null);
+            // Force the image to load into memory to prevent flickering
+            scaledImage.getWidth(null);
+            scaledImage.getHeight(null);
 
             animation.addFrame(scaledImage, duration);
         }
@@ -112,7 +112,7 @@ public class Fairy implements Enemy{
         }
 
         // Update the animation
-        if (currentAnimation==null || !currentAnimation.isStillActive()) {
+        if (currentAnimation == null || !currentAnimation.isStillActive()) {
             currentAnimation = animations.get("idle");
             currentAnimation.start();
         }
@@ -129,7 +129,8 @@ public class Fairy implements Enemy{
         int maxDistance = 700; // Maximum distance the projectile can travel
 
         // Create a new projectile
-        Projectile projectile = new Projectile(x + (hitboxWidth/2), y, player.getX(), player.getY(), tileMap, "images/collectibles/Light.png", projectileSpeed, maxDistance);
+        Projectile projectile = new Projectile(x + (hitboxWidth / 2), y, player.getX(), player.getY(), tileMap,
+                "images/collectibles/Light.png", projectileSpeed, maxDistance);
         tileMap.addProjectile(projectile);
     }
 
@@ -137,7 +138,7 @@ public class Fairy implements Enemy{
         Image currentImage = currentAnimation.getImage();
         int hitboxCenterX = x + hitboxWidth / 2;
         int drawX = hitboxCenterX - SCALED_WIDTH / 2 + offsetX;
-        int drawY = y - (SCALED_HEIGHT - hitboxHeight)/2;
+        int drawY = y - (SCALED_HEIGHT - hitboxHeight) / 2;
         if (facingLeft) {
             g2.drawImage(currentImage, drawX + SCALED_WIDTH, drawY,
                     -SCALED_WIDTH, SCALED_HEIGHT, null);
@@ -153,7 +154,8 @@ public class Fairy implements Enemy{
 
     @Override
     public void takeDamage(float damage) {
-        if (!alive || dead) return;
+        if (!alive || dead)
+            return;
 
         health -= damage;
         if (health <= 0 && alive) {

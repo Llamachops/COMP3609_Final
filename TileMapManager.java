@@ -62,11 +62,13 @@ public class TileMapManager {
                     Coin coin = new Coin(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY());
                     newMap.addCoin(coin);
                 } else if (ch == 't') {
-                    Troll troll = new Troll(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(), newMap, newMap.getPlayer());
+                    Troll troll = new Troll(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                            newMap, newMap.getPlayer());
                     newMap.addTroll(troll);
                     System.out.println("Troll added at: " + TileMap.tilesToPixels(x) + ", " + TileMap.tilesToPixels(y));
                 } else if (ch == 'f') {
-                    Fairy fairy = new Fairy(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(), newMap, newMap.getPlayer());
+                    Fairy fairy = new Fairy(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                            newMap, newMap.getPlayer());
                     newMap.addFairy(fairy);
                 }
             }

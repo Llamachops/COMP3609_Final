@@ -23,11 +23,11 @@ public class TileMap {
     private int coinCounter = 0; // Counter for collected coins
 
     private int livesCounter = 3; // Number of lives
-    
+
     private ArrayList<Troll> trolls = new ArrayList<>();
     private ArrayList<Fairy> fairies = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-    
+
     private int screenWidth, screenHeight;
     private int mapWidth, mapHeight;
     private static int offsetY;
@@ -337,7 +337,7 @@ public class TileMap {
         // Call restartGame in GameWindow
         ((GameWindow) window).restartGame();
     }
-    
+
     public void setCoinCounter(int value) {
         coinCounter = value;
     }

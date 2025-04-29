@@ -41,7 +41,7 @@ public class Coin {
         // Update the hitbox position to match the coin's position
         hitbox.setBounds(x, y, TILE_SIZE, TILE_SIZE);
     }
-    
+
     public void draw(Graphics2D g2) {
         if (!collected) {
             g2.drawImage(animation.getImage(), x, y, TILE_SIZE, TILE_SIZE, null);

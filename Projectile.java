@@ -18,7 +18,8 @@ public class Projectile {
     private static final int IMAGE_WIDTH = 48;
     private static final int IMAGE_HEIGHT = 48;
 
-    public Projectile(int x, int y, int targetX, int targetY, TileMap tileMap, String imagePath, int speed, int maxDistance) {
+    public Projectile(int x, int y, int targetX, int targetY, TileMap tileMap, String imagePath, int speed,
+            int maxDistance) {
         this.x = x;
         this.y = y;
         this.startX = x;
@@ -37,7 +38,8 @@ public class Projectile {
     }
 
     public void update() {
-        if (!active) return;
+        if (!active)
+            return;
 
         x += directionX * speed;
         y += directionY * speed;
@@ -55,7 +57,8 @@ public class Projectile {
     }
 
     public void draw(Graphics2D g2, int offsetX, int offsetY) {
-        if (!active) return;
+        if (!active)
+            return;
 
         int drawX = x + offsetX + (HITBOX_WIDTH - IMAGE_WIDTH) / 2;
         int drawY = y + (HITBOX_HEIGHT - IMAGE_HEIGHT) / 2;

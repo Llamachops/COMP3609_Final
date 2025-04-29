@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.util.HashMap;
 
-public class Troll implements Enemy{
+public class Troll implements Enemy {
 
     private static final int TILE_SIZE = 128;
     private static final int SCALED_WIDTH = 300;
@@ -51,10 +51,10 @@ public class Troll implements Enemy{
             String filename = filePath + i + ".png";
             Image originalImage = ImageManager.loadImage(filename);
             Image scaledImage = originalImage.getScaledInstance(SCALED_WIDTH, SCALED_HEIGHT, Image.SCALE_SMOOTH);
-            
-			// Force the image to load into memory to prevent flickering
-			scaledImage.getWidth(null);
-			scaledImage.getHeight(null);
+
+            // Force the image to load into memory to prevent flickering
+            scaledImage.getWidth(null);
+            scaledImage.getHeight(null);
 
             animation.addFrame(scaledImage, duration);
         }
@@ -172,11 +172,12 @@ public class Troll implements Enemy{
         if (currentAnimation == null) {
             currentAnimation = animations.get("idle");
             currentAnimation.start();
-        };
+        }
+        ;
         Image currentImage = currentAnimation.getImage();
         int hitboxCenterX = x + hitboxWidth / 2;
         int drawX = hitboxCenterX - SCALED_WIDTH / 2 + offsetX;
-        int drawY = y - (SCALED_HEIGHT - hitboxHeight)/2 - 35;
+        int drawY = y - (SCALED_HEIGHT - hitboxHeight) / 2 - 35;
         if (facingLeft) {
             g2.drawImage(currentImage, drawX + SCALED_WIDTH, drawY,
                     -SCALED_WIDTH, SCALED_HEIGHT, null);
@@ -192,7 +193,8 @@ public class Troll implements Enemy{
 
     @Override
     public void takeDamage(float damage) {
-        if (!alive || dead) return;
+        if (!alive || dead)
+            return;
 
         health -= damage;
         if (health <= 0 && alive) {
