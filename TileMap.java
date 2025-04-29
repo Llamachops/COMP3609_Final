@@ -76,8 +76,8 @@ public class TileMap {
         int x, y;
         // x = (dimension.width / 2) + TILE_SIZE; // position player in middle of screen
 
-        x = 192; // position player in 'random' location
-        y = tilesToPixels(mapHeight) - TILE_SIZE - playerHeight;
+        x = 192; // position player
+        y = 600;
 
         player.setX(x);
         player.setY(y);

@@ -2,15 +2,15 @@
 # (Lines that start with '#' are comments)
 # The tiles are:
 #   (Space) Empty tile
-#   A..Z    Tiles A through Z
-#   o       Star
-#   !       Music Note
-#   *       Goal
-#   1       Bad Guy 1 (grub)
-#   2       Bad Guy 2 (fly)
+#   A..R    Tiles A through R
+#   o       coin
+#   t       troll
+#   f       fairy
+
+
 
                       LMMMMMN      LMMMMMN   
             f                                 
 LMN     ooo       FDJ         LMMMN           
-      t FDJ       KHO  PP                     
-DDDDDDDJKHOFD DD JKHOFDDDDDDDDDDDDDDDDDDDDDDDD
+      t FDJ       KHO                     
+DDDDDDDJKHOFDDDDDJKHOFDDDDDDDDDDDDDDDDDDDDDDDD
