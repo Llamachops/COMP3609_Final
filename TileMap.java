@@ -1,4 +1,5 @@
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.awt.Color;
@@ -23,6 +24,10 @@ public class TileMap {
     private ArrayList<Coin> coins; // List of coins in the map
     private int coinCounter = 0; // Counter for collected coins
 
+    private int livesCounter = 3; // Number of lives
+    
+    private ArrayList<Troll> trolls = new ArrayList<>();
+    
     private int screenWidth, screenHeight;
     private int mapWidth, mapHeight;
     private static int offsetY;
@@ -205,7 +210,7 @@ public class TileMap {
         int playerY = player.getY();
 
         int drawX = playerX + (playerHitboxWidth - animWidth) / 2;
-        int drawY = playerY + (playerHitboxHeight - animHeight) / 2;
+        int drawY = playerY + (playerHitboxHeight - animHeight) / 2 + 10;
 
         if (player.isFacingLeft()) {
             g2.drawImage(playerAnimImage, drawX + animWidth + offsetX,
@@ -237,12 +242,16 @@ public class TileMap {
                 g2.setColor(Color.RED);
                 Rectangle coinHitbox = coin.getHitbox(); // World coordinates
                 g2.drawRect(
-                    coinHitbox.x + offsetX, // Convert to screen X
-                    coinHitbox.y,
-                    coinHitbox.width,
-                    coinHitbox.height
-                );
+                        coinHitbox.x + offsetX, // Convert to screen X
+                        coinHitbox.y,
+                        coinHitbox.width,
+                        coinHitbox.height);
             }
+        }
+
+        // Draw trolls
+        for (Troll troll : trolls) {
+            troll.draw(g2, offsetX, offsetY);
         }
     }
 
@@ -252,7 +261,7 @@ public class TileMap {
         y = player.getY();
 
         String mess = "Going left. x = " + x + " y = " + y;
-        System.out.println(mess);
+        // System.out.println(mess);
 
         player.move(1);
 
@@ -264,7 +273,7 @@ public class TileMap {
         y = player.getY();
 
         String mess = "Going right. x = " + x + " y = " + y;
-        System.out.println(mess);
+        // System.out.println(mess);
 
         player.move(2);
 
@@ -280,7 +289,7 @@ public class TileMap {
         y = player.getY();
 
         String mess = "Jumping. x = " + x + " y = " + y;
-        System.out.println(mess);
+        // System.out.println(mess);
 
         player.move(3);
 
@@ -305,6 +314,29 @@ public class TileMap {
             }
             coin.update();
         }
+
+        // Update trolls
+        for (Troll troll : trolls) {
+            troll.update();
+        }
     }
 
+    public int getNumLives() {
+        return livesCounter;
+    }
+
+    public void changeNumLives(int amount) {
+        livesCounter += amount;
+        if (livesCounter < 0) {
+            livesCounter = 0;
+        }
+    }
+
+    public void addTroll(Troll troll) {
+        trolls.add(troll);
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
 }

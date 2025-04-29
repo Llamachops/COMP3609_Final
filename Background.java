@@ -49,7 +49,7 @@ public class Background {
         backgroundX2 = backgroundX2 - bgDX;
 
         if ((bgX + (int) (bgImageWidth * scaleX)) % (int) (bgImageWidth * scaleX) == 0) {
-            System.out.println("Background change: bgX = " + bgX);
+            // System.out.println("Background change: bgX = " + bgX);
             backgroundX = 0;
             backgroundX2 = (int) (bgImageWidth * scaleX);
         }

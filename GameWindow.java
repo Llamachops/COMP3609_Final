@@ -126,15 +126,17 @@ public class GameWindow extends JFrame implements
 
 	public void gameUpdate() {
 
-		if (movingLeft) {
-			tileMap.moveLeft();
-		} else if (movingRight) {
-			tileMap.moveRight();
-		} else {
-			tileMap.stopMoving();
+		if (!isPaused && !isStopped) {
+			if (movingLeft) {
+				tileMap.moveLeft();
+			} else if (movingRight) {
+				tileMap.moveRight();
+			} else {
+				tileMap.stopMoving();
+			}
+
+			tileMap.update();
 		}
-		
-		tileMap.update();
 
 		if (!isPaused && isAnimShown && !isAnimPaused) {
 			// animation.update();
@@ -178,6 +180,7 @@ public class GameWindow extends JFrame implements
 		// Graphics2D g2 = (Graphics2D) getGraphics(); // get the graphics context for
 		// window
 
+		drawLivesCounter(imageContext); // draw the lives counter
 		drawCoinCounter(imageContext); // draw the coin counter
 		drawButtons(imageContext); // draw the buttons
 
@@ -377,14 +380,25 @@ public class GameWindow extends JFrame implements
 		int y = 20; // 20 pixels from the top edge
 
 		// Draw the coin count text
-		g2.setFont(new Font("Arial", Font.BOLD, 24));
+		g2.setFont(new Font("Arial", Font.BOLD, 32));
 		g2.setColor(Color.WHITE);
-		g2.drawString(coinCount + " x", x, y + 24);
+		g2.drawString(coinCount + " x", x, y + 40);
 
 		// Draw the coin image next to the text
-		g2.drawImage(coinImage, x + 60, y, 32, 32, null);
+		g2.drawImage(coinImage, x + 60, y, 64, 64, null);
 	}
+
+	private void drawLivesCounter(Graphics2D g2) {
+		int lives = tileMap.getNumLives();
+		Image lifeImage = ImageManager.loadImage("images/collectibles/Life.png");
+		int x = 20; // 20 pixels from the left edge
+		int y = 20; // 20 pixels from the top edge
 	
+		for (int i = 0; i < lives; i++) {
+			g2.drawImage(lifeImage, x + (i * (lifeImage.getWidth(null) + 5)/2), y, 64, 64, null);
+		}
+	}
+
 	private void startGame() {
 		if (gameThread == null) {
 			// soundManager.playSound ("background", true);
@@ -438,7 +452,7 @@ public class GameWindow extends JFrame implements
 		int keyCode = e.getKeyCode();
 
 		if ((keyCode == KeyEvent.VK_ESCAPE) || (keyCode == KeyEvent.VK_Q) ||
-			(keyCode == KeyEvent.VK_END)) {
+				(keyCode == KeyEvent.VK_END)) {
 			isRunning = false; // user can quit by pressing ESC, Q or END
 			return;
 		} else if (keyCode == KeyEvent.VK_LEFT) {

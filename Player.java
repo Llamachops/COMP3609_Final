@@ -309,7 +309,7 @@ public class Player {
 					fall();
 				} else {
 					y = newY;
-					System.out.println("Jumping: No collision.");
+					// System.out.println("Jumping: No collision.");
 				}
 			} else if (goingDown) {
 				Point tilePos = collidesWithTileDown(x, newY);
@@ -326,7 +326,7 @@ public class Player {
 					inAir = false;
 				} else {
 					y = newY;
-					System.out.println("Jumping: No collision.");
+					// System.out.println("Jumping: No collision.");
 				}
 			}
 		} else if (movingLeft || movingRight) {

@@ -1,3 +1,3 @@
-public class fairy {
+public class Fairy {
     
 }
