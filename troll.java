@@ -173,18 +173,32 @@ public class Troll implements Enemy {
             currentAnimation = animations.get("idle");
             currentAnimation.start();
         }
-        ;
+
         Image currentImage = currentAnimation.getImage();
         int hitboxCenterX = x + hitboxWidth / 2;
         int drawX = hitboxCenterX - SCALED_WIDTH / 2 + offsetX;
         int drawY = y - (SCALED_HEIGHT - hitboxHeight) / 2 - 35;
+
         if (facingLeft) {
-            g2.drawImage(currentImage, drawX + SCALED_WIDTH, drawY,
-                    -SCALED_WIDTH, SCALED_HEIGHT, null);
+            g2.drawImage(currentImage, drawX + SCALED_WIDTH, drawY, -SCALED_WIDTH, SCALED_HEIGHT, null);
         } else {
-            g2.drawImage(currentImage, drawX, drawY,
-                    SCALED_WIDTH, SCALED_HEIGHT, null);
+            g2.drawImage(currentImage, drawX, drawY, SCALED_WIDTH, SCALED_HEIGHT, null);
         }
+
+        // Draw health bar
+        int barWidth = 100; // Width of the health bar
+        int barHeight = 10; // Height of the health bar
+        int barX = x + (hitboxWidth - barWidth) / 2 + offsetX; // Center the bar below the enemy
+        int barY = y + hitboxHeight + 5; // Position the bar just below the enemy
+
+        // Draw the black background of the health bar
+        g2.setColor(Color.BLACK);
+        g2.fillRect(barX, barY, barWidth, barHeight);
+
+        // Draw the red health fill based on the enemy's current health
+        int healthFillWidth = (int) ((health / 100.0f) * barWidth);
+        g2.setColor(Color.RED);
+        g2.fillRect(barX, barY, healthFillWidth, barHeight);
 
         // Debug: Draw hitbox
         g2.setColor(Color.RED);
