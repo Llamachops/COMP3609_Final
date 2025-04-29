@@ -66,8 +66,8 @@ public class TileMapManager {
                     newMap.addTroll(troll);
                     System.out.println("Troll added at: " + TileMap.tilesToPixels(x) + ", " + TileMap.tilesToPixels(y));
                 } else if (ch == 'f') {
-                    // Fairy fairy = new Fairy(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(), newMap);
-                    // newMap.addFairy(fairy);
+                    Fairy fairy = new Fairy(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(), newMap, newMap.getPlayer());
+                    newMap.addFairy(fairy);
                 }
             }
         }

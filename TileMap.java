@@ -2,6 +2,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -27,6 +28,8 @@ public class TileMap {
     private int livesCounter = 3; // Number of lives
     
     private ArrayList<Troll> trolls = new ArrayList<>();
+    private ArrayList<Fairy> fairies = new ArrayList<>();
+    private ArrayList<Projectile> projectiles = new ArrayList<>();
     
     private int screenWidth, screenHeight;
     private int mapWidth, mapHeight;
@@ -253,6 +256,16 @@ public class TileMap {
         for (Troll troll : trolls) {
             troll.draw(g2, offsetX, offsetY);
         }
+
+        // Draw fairies
+        for (Fairy fairy : fairies) {
+            fairy.draw(g2, offsetX, offsetY);
+        }
+
+        // Draw projectiles
+        for (Projectile projectile : projectiles) {
+            projectile.draw(g2, offsetX, offsetY);
+        }
     }
 
     public void moveLeft() {
@@ -319,6 +332,23 @@ public class TileMap {
         for (Troll troll : trolls) {
             troll.update();
         }
+
+        // Update fairies
+        for (Fairy fairy : fairies) {
+            fairy.update();
+        }
+
+        // Update projectiles
+        Iterator<Projectile> projectileIterator = projectiles.iterator();
+        while (projectileIterator.hasNext()) {
+            Projectile projectile = projectileIterator.next();
+            projectile.update();
+            if (!projectile.isActive()) {
+                System.out.println("Projectile being removed!");
+                projectileIterator.remove(); // Remove inactive projectiles
+                System.out.println("Projectile removed!");
+            }
+        }
     }
 
     public int getNumLives() {
@@ -357,6 +387,14 @@ public class TileMap {
 
     public void addTroll(Troll troll) {
         trolls.add(troll);
+    }
+
+    public void addFairy(Fairy fairy) {
+        fairies.add(fairy);
+    }
+
+    public void addProjectile(Projectile projectile) {
+        projectiles.add(projectile);
     }
 
     public Player getPlayer() {
