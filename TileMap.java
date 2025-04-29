@@ -27,6 +27,7 @@ public class TileMap {
     private ArrayList<Troll> trolls = new ArrayList<>();
     private ArrayList<Fairy> fairies = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
+    private Chest chest = null;
 
     private int screenWidth, screenHeight;
     private int mapWidth, mapHeight;
@@ -77,7 +78,7 @@ public class TileMap {
         // x = (dimension.width / 2) + TILE_SIZE; // position player in middle of screen
 
         x = 192; // position player
-        y = 600;
+        y = 630;
 
         player.setX(x);
         player.setY(y);
@@ -234,6 +235,8 @@ public class TileMap {
         for (Projectile projectile : projectiles) {
             projectile.draw(g2, offsetX, offsetY);
         }
+
+        chest.draw(g2, offsetX, offsetY);
     }
 
     public void moveLeft() {
@@ -256,6 +259,10 @@ public class TileMap {
     }
 
     public void update() {
+        if (chest.isOpened()) {
+            triggerLevelComplete();
+        }
+
         player.update();
 
         // Get the scrolling offsets
@@ -306,6 +313,11 @@ public class TileMap {
                 // System.out.println("Projectile removed!");
             }
         }
+
+        // Check for collision with the chest
+        if (chest != null) {
+            chest.update();
+        }
     }
 
     public int getNumLives() {
@@ -314,8 +326,8 @@ public class TileMap {
 
     public void changeNumLives(int amount) {
         livesCounter += amount;
-        if (livesCounter < 0) {
-            livesCounter = 0;
+        if (livesCounter < 1) {
+            livesCounter = 3;
             gameOver();
         }
     }
@@ -363,5 +375,29 @@ public class TileMap {
         enemies.addAll(trolls);
         enemies.addAll(fairies);
         return enemies;
+    }
+
+    public void addChest(Chest chest) {
+        this.chest = chest;
+    }
+
+    private void triggerLevelComplete() {
+        System.out.println("Level Complete!");
+        Image completeImage = ImageManager.loadImage("images/complete.png");
+
+        // Display the "Level Complete" screen
+        Graphics2D g2 = (Graphics2D) window.getGraphics();
+        g2.drawImage(completeImage, (screenWidth - 800) / 2, (screenHeight - 1000) / 2, 800, 1000, null);
+        g2.dispose();
+
+        // Start a timer to load the next level
+        try {
+            Thread.sleep(3000); // Wait for 3 seconds
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Call loadNextLevel in GameWindow
+        ((GameWindow) window).changeLevel();
     }
 }

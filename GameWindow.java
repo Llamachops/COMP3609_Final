@@ -57,6 +57,7 @@ public class GameWindow extends JFrame implements
 	private SoundManager soundManager;
 	TileMapManager tileManager;
 	TileMap tileMap;
+	private int level = 1; // Current level of the game
 
 	void restartGame() {
 		isPaused = true; // Pause the game during the restart
@@ -72,7 +73,7 @@ public class GameWindow extends JFrame implements
 
 		// Reload the map
 		try {
-			tileMap = tileManager.loadMap("maps/map1.txt");
+			tileMap = tileManager.loadMap("maps/map" + level + ".txt");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -80,6 +81,23 @@ public class GameWindow extends JFrame implements
 		isPaused = false; // Resume the game
 	}
 
+	void changeLevel() {
+		isPaused = true;
+	    level++; // Increment the level count
+	    try {
+	        // Attempt to load the next level
+	        tileMap = tileManager.loadMap("maps/map" + level + ".txt");
+	        System.out.println("Loaded map: maps/map" + level + ".txt");
+	    } catch (IOException e) {
+	        System.out.println("Failed to load map: maps/map" + level + ".txt");
+	        e.printStackTrace();
+	        // Optionally, handle the case where no more levels exist
+	        gameOverMessage(getGraphics());
+	        isRunning = false; // Stop the game if no more levels exist
+	    }
+		isPaused = false;
+	}
+	
 	public GameWindow() {
 
 		super("Tiled Bat and Ball Game: Full Screen Exclusive Mode");
@@ -445,11 +463,10 @@ public class GameWindow extends JFrame implements
 	private void startGame() {
 		if (gameThread == null) {
 			// soundManager.playSound ("background", true);
-
 			tileManager = new TileMapManager(this);
 
 			try {
-				tileMap = tileManager.loadMap("maps/map1.txt");
+				tileMap = tileManager.loadMap("maps/map" + level + ".txt");
 				int w, h;
 				w = tileMap.getWidth();
 				h = tileMap.getHeight();
@@ -609,4 +626,5 @@ public class GameWindow extends JFrame implements
 		}
 	}
 
+	
 }

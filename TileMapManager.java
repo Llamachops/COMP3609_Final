@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 public class TileMapManager {
 
     private ArrayList<Image> tiles;
-    // private int currentMap = 0;
+    private int currentMap = 1;
 
     private JFrame window;
 
@@ -70,6 +70,11 @@ public class TileMapManager {
                     Fairy fairy = new Fairy(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
                             newMap, newMap.getPlayer());
                     newMap.addFairy(fairy);
+                } else if (ch == '*') {
+                    Chest chest = new Chest(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                            newMap.getPlayer());
+                    newMap.addChest(chest);
+                    System.out.println("Chest added at: " + TileMap.tilesToPixels(x) + ", " + TileMap.tilesToPixels(y));
                 }
             }
         }
