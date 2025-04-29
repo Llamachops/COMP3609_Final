@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 
 public class TileMap {
 
-    private static final int TILE_SIZE = 128;
+    static final int TILE_SIZE = 128;
     private static final int TILE_SIZE_BITS = 6;
 
     private Image[][] tiles;
@@ -329,7 +329,30 @@ public class TileMap {
         livesCounter += amount;
         if (livesCounter < 0) {
             livesCounter = 0;
+            gameOver();
         }
+    }
+
+    public void gameOver() {
+        System.out.println("Game Over!");
+        Image gameOverImage = ImageManager.loadImage("images/game_over.png");
+
+        Graphics2D g2 = (Graphics2D) window.getGraphics();
+        g2.drawImage(gameOverImage, (screenWidth - 400) / 2, (screenHeight - 200) / 2, 400, 200, null);
+        g2.dispose();
+
+        try {
+            Thread.sleep(3000); // Wait for 3 seconds
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Call restartGame in GameWindow
+        ((GameWindow) window).restartGame();
+    }
+    
+    public void setCoinCounter(int value) {
+        coinCounter = value;
     }
 
     public void addTroll(Troll troll) {

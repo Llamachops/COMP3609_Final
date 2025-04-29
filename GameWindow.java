@@ -1,6 +1,7 @@
 import javax.swing.*; // need this for GUI objects
 import java.awt.*; // need this for certain AWT classes
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy; // need this to implement page flipping
 
@@ -56,6 +57,28 @@ public class GameWindow extends JFrame implements
 	TileMapManager tileManager;
 	TileMap tileMap;
 
+	void restartGame() {
+		isPaused = true; // Pause the game during the restart
+	
+		// Reset player lives and coin counter
+		tileMap.changeNumLives(3 - tileMap.getNumLives()); // Reset lives to 3
+		tileMap.setCoinCounter(0); // Reset coin counter
+	
+		// Reset player position
+		Player player = tileMap.getPlayer();
+		player.setX(192); // Reset player X position
+		player.setY(TileMap.tilesToPixels(tileMap.getHeight()) - TileMap.TILE_SIZE - player.getHitboxHeight());
+	
+		// Reload the map
+		try {
+			tileMap = tileManager.loadMap("maps/map1.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		isPaused = false; // Resume the game
+	}
+
 	public GameWindow() {
 
 		super("Tiled Bat and Ball Game: Full Screen Exclusive Mode");
@@ -88,7 +111,7 @@ public class GameWindow extends JFrame implements
 					gameUpdate();
 				}
 				screenUpdate();
-				Thread.sleep(50);
+				Thread.sleep(1000 / 30);
 			}
 		} catch (InterruptedException e) {
 		}
