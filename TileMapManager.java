@@ -75,19 +75,23 @@ public class TileMapManager {
                             newMap.getPlayer());
                     newMap.addChest(chest);
                 } else if (ch == '1') { // Damage power-up
-                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x),
+                            TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
                             PowerUp.PowerUpType.DAMAGE);
                     newMap.addPowerUp(powerUp);
                 } else if (ch == '2') { // Critical chance power-up
-                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x),
+                            TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
                             PowerUp.PowerUpType.CRIT_CHANCE);
                     newMap.addPowerUp(powerUp);
                 } else if (ch == '3') { // Critical damage power-up
-                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x),
+                            TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
                             PowerUp.PowerUpType.CRIT_DAMAGE);
                     newMap.addPowerUp(powerUp);
                 } else if (ch == '4') { // Lives power-up
-                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x),
+                            TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
                             PowerUp.PowerUpType.LIVES);
                     newMap.addPowerUp(powerUp);
                 }

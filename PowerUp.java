@@ -34,7 +34,7 @@ public class PowerUp {
     }
 
     public void draw(Graphics2D g2, int offsetX, int offsetY) {
-        g2.drawImage(image, x + offsetX, y+10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
+        g2.drawImage(image, x + offsetX, y + 10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
     }
 
     public Rectangle getHitbox() {

@@ -54,8 +54,8 @@ public class BackgroundManager {
 	}
 
 	public void reset() {
-	    for (Background background : backgrounds) {
-	        background.resetPosition();
-	    }
+		for (Background background : backgrounds) {
+			background.resetPosition();
+		}
 	}
 }

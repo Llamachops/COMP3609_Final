@@ -38,7 +38,7 @@ public class Coin {
 
     public void draw(Graphics2D g2, int offsetX, int offsetY) {
         if (!collected) {
-            g2.drawImage(animation.getImage(), x + offsetX, y+10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
+            g2.drawImage(animation.getImage(), x + offsetX, y + 10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
         }
     }
 

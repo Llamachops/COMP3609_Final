@@ -113,7 +113,7 @@ public class TileMap {
     public int setCoinCounter() {
         return coinCounter;
     }
-    
+
     public void addCoin(Coin coin) {
         coins.add(coin);
     }
@@ -190,8 +190,8 @@ public class TileMap {
                     // Draw tile hitbox for debugging
                     // g2.setColor(Color.GREEN);
                     // g2.drawRect(tilesToPixels(x) + offsetX,
-                    //         tilesToPixels(y) + offsetY,
-                    //         TILE_SIZE, TILE_SIZE);
+                    // tilesToPixels(y) + offsetY,
+                    // TILE_SIZE, TILE_SIZE);
                 }
             }
         }
@@ -316,7 +316,7 @@ public class TileMap {
                 powerUpIterator.remove();
             }
         }
-        
+
         // Check for collision with the chest
         if (chest != null) {
             chest.update();
@@ -335,7 +335,7 @@ public class TileMap {
         }
         if (amount < 0) {
             ((GameWindow) window).soundManager.playSound("player_hurt", false); // Play hit sound
-        } 
+        }
     }
 
     public void gameOver() {
@@ -438,7 +438,7 @@ public class TileMap {
         player.setTileMap(this);
         player.setBackgroundManager(bgManager);
     }
-    
+
     public void clearLevel() {
         coins.clear();
         trolls.clear();

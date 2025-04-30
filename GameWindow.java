@@ -434,7 +434,7 @@ public class GameWindow extends JFrame implements
 
 	private void startGame() {
 		if (gameThread == null) {
-			soundManager.playSound ("background", true);
+			soundManager.playSound("background", true);
 			tileManager = new TileMapManager(this);
 
 			try {

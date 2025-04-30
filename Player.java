@@ -423,7 +423,7 @@ public class Player {
 		currentAnimation = animations.get(currentState);
 		currentAnimation.start();
 
-        ((GameWindow) window).soundManager.playSound("attack", false); // Play attack sound
+		((GameWindow) window).soundManager.playSound("attack", false); // Play attack sound
 
 		// Define the attack hitbox
 		int attackWidth = 150; // Length of the attack range

@@ -17,20 +17,20 @@ public class Chest {
 
     public void draw(Graphics2D g2, int offsetX, int offsetY) {
         if (!opened) {
-            g2.drawImage(chestImage, x + offsetX, y+10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
+            g2.drawImage(chestImage, x + offsetX, y + 10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
         } else {
             this.chestImage = ImageManager.loadImage("images/collectibles/Chest_01_Unlocked.png");
-            g2.drawImage(chestImage, x + offsetX, y+10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
+            g2.drawImage(chestImage, x + offsetX, y + 10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
         }
     }
 
-    public void update() {        
+    public void update() {
         if (player.getHitbox().intersects(getHitbox())) {
             open();
             System.out.println("Chest collected!");
         }
     }
-    
+
     public Rectangle getHitbox() {
         return hitbox;
     }

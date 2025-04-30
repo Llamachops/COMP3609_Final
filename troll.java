@@ -115,7 +115,7 @@ public class Troll implements Enemy {
                 }
 
                 int newX = facingLeft ? x - SPEED : x + SPEED;
-                int checkX = facingLeft ? newX: newX + hitboxWidth;
+                int checkX = facingLeft ? newX : newX + hitboxWidth;
                 Point tilePos = collidesWithTile(checkX, y);
                 if (tilePos == null) {
                     x = newX;
