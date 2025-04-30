@@ -17,9 +17,6 @@ public class GameWindow extends JFrame implements
 	private Thread gameThread = null; // the thread that controls the game
 	private volatile boolean isRunning = false; // used to stop the game thread
 
-	// private BirdAnimation animation = null; // animation sprite
-	// private ImageEffect imageEffect; // sprite demonstrating an image effect
-
 	private boolean movingLeft = false; // used to move the player left
 	private boolean movingRight = false; // used to move the player right
 
@@ -79,7 +76,9 @@ public class GameWindow extends JFrame implements
 
 		try {
 			// Pass the existing player object to retain stats
+			int coins = tileMap.getCoinCounter(); // Get the current coin count
 			tileMap = tileManager.loadMap("maps/map" + level + ".txt", tileMap.getPlayer());
+			tileMap.setCoinCounter(coins); // Set the coin counter to the previous value
 			Player player = tileMap.getPlayer();
 			player.setX(192); // Reset player X position
 			player.setY(630);
@@ -313,8 +312,6 @@ public class GameWindow extends JFrame implements
 		stopButtonArea = new Rectangle(leftOffset, 60, 150, 40);
 
 		leftOffset = leftOffset + 170;
-		int quitLength = quit1Image.getWidth(null);
-		int quitHeight = quit1Image.getHeight(null);
 		quitButtonArea = new Rectangle(leftOffset, 55, 180, 50);
 	}
 

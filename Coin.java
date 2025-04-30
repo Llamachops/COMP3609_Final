@@ -33,18 +33,12 @@ public class Coin {
     public void update() {
         if (!collected) {
             animation.update();
-            updateHitbox();
         }
     }
 
-    public void updateHitbox() {
-        // Update the hitbox position to match the coin's position
-        hitbox.setBounds(x, y, TILE_SIZE, TILE_SIZE);
-    }
-
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2, int offsetX, int offsetY) {
         if (!collected) {
-            g2.drawImage(animation.getImage(), x, y, TILE_SIZE, TILE_SIZE, null);
+            g2.drawImage(animation.getImage(), x + offsetX, y+10, TileMap.TILE_SIZE, TileMap.TILE_SIZE, null);
         }
     }
 
@@ -57,7 +51,7 @@ public class Coin {
     }
 
     public Rectangle getHitbox() {
-        return new Rectangle(x, y, TILE_SIZE, TILE_SIZE);
+        return hitbox;
     }
 
     public Animation getAnimation() {

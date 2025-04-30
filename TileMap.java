@@ -1,8 +1,6 @@
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.swing.JFrame;
@@ -21,7 +19,6 @@ public class TileMap {
 
     private ArrayList<Coin> coins; // List of coins in the map
     private int coinCounter = 0; // Counter for collected coins
-
     private int livesCounter = 3; // Number of lives
 
     private ArrayList<Troll> trolls = new ArrayList<>();
@@ -113,6 +110,10 @@ public class TileMap {
         return coinCounter;
     }
 
+    public int setCoinCounter() {
+        return coinCounter;
+    }
+    
     public void addCoin(Coin coin) {
         coins.add(coin);
     }
@@ -200,21 +201,7 @@ public class TileMap {
 
         // Draw coins
         for (Coin coin : coins) {
-            if (!coin.isCollected()) {
-                g2.drawImage(coin.getAnimation().getImage(),
-                        coin.getX() + offsetX,
-                        coin.getY(),
-                        TILE_SIZE, TILE_SIZE, null);
-
-                // Draw coin hitbox for debugging
-                // g2.setColor(Color.RED);
-                // Rectangle coinHitbox = coin.getHitbox(); // World coordinates
-                // g2.drawRect(
-                //         coinHitbox.x + offsetX, // Convert to screen X
-                //         coinHitbox.y,
-                //         coinHitbox.width,
-                //         coinHitbox.height);
-            }
+            coin.draw(g2, offsetX, offsetY);
         }
 
         // Draw trolls
