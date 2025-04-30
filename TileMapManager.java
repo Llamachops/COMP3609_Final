@@ -105,7 +105,7 @@ public class TileMapManager {
     // code for loading sprites and images
     // -----------------------------------------------------------
 
-    public void loadTileImages() {
+    private void loadTileImages() {
         // keep looking for tile A,B,C, etc. this makes it
         // easy to drop new tiles in the images/ folder
 

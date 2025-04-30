@@ -6,11 +6,7 @@ import java.util.HashMap; // for storing sound clips
 
 public class SoundManager { // a Singleton class
 	HashMap<String, Clip> clips;
-
-	Clip hitClip = null; // played when bat hits ball
-	Clip appearClip = null; // played when ball is re-generated
-	Clip backgroundClip = null; // played continuously after ball is created
-
+	
 	private static SoundManager instance = null; // keeps track of Singleton instance
 
 	private SoundManager() {
