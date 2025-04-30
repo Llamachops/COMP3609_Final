@@ -6,11 +6,12 @@
 #   o       coin
 #   t       troll
 #   f       fairy
-
-
-
-                      LMMMMMN      LMMMMMN   
-            f                                 
-LMN     123       FDJ         LMMMN           
-  *   t FDJ   1234KHO                     
-DDDDDDDJKHOFDDDDDJKHOFDDDDDDDDDDDDDDDDDDDDDDDD
+#   1..4    PowerUps
+                         F
+                         K
+                         K
+                         K
+                         K
+LMN     ooo     f        K
+       tFDJ    t     t 2*K
+DDDDDDDJKHOFDDDDDDDDDDDDJK

@@ -1,0 +1,17 @@
+# Map file for tile-based game
+# (Lines that start with '#' are comments)
+# The tiles are:
+#   (Space) Empty tile
+#   A..R    Tiles A through R
+#   o       coin
+#   t       troll
+#   f       fairy
+#   1..4    PowerUps
+                                 F
+                                 K
+                                 K
+             3                   K
+            FDJ                  K
+LMN       Q KHO   f  o  f        K
+        tQQ KHO4  f  o  f     12*K
+DDDDDDDDDDDJKHOFDDDDDDDDDDDDDDDDJK

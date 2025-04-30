@@ -1,18 +1,17 @@
-# Map file for tile-based game 
+# Map file for tile-based game
 # (Lines that start with '#' are comments)
 # The tiles are:
 #   (Space) Empty tile
-#   A..Z    Tiles A through Z
-#   o       Star
-#   !       Music Note
-#   *       Goal
-#   1       Bad Guy 1 (grub)
-#   2       Bad Guy 2 (fly)
-
-D                                           I             o o   C
-D                    2   !        2                      IIIII  C
-D                      IIIII                                    C
-D         III                          1    1  1        2       C
-D               t            1      IIIIIIIIIIIII               C
-D      1*      EBBBBBBBBBBBBBBBF     o o o o o o                C
-HBBBBBBBBBBBBBBGAAAAAAAAAAAAAAAHBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBG
+#   A..R    Tiles A through R
+#   o       coin
+#   t       troll
+#   f       fairy
+#   1..4    PowerUps
+                                    F
+                                    K
+              oo   oo   oo          K
+                                  3*K
+       FDJ LMN  LMN  LMN  LMN  FDDDJK
+LMN    KHO                     KHHHOK
+     QQKHO  t 2  t    t 4  t  RKHHHOK
+DDDDDDJKHOFDDDDDDDDDDDDDDDDDDDJKHHHOK
