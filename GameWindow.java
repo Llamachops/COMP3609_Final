@@ -46,7 +46,7 @@ public class GameWindow extends JFrame implements
 	private BufferStrategy bufferStrategy;
 
 	private Font statsFont = new Font("Arial", Font.BOLD, 32);
-	private SoundManager soundManager;
+	SoundManager soundManager;
 	TileMapManager tileManager;
 	TileMap tileMap;
 	private int level = 1; // Current level of the game
@@ -437,7 +437,7 @@ public class GameWindow extends JFrame implements
 
 	private void startGame() {
 		if (gameThread == null) {
-			// soundManager.playSound ("background", true);
+			soundManager.playSound ("background", true);
 			tileManager = new TileMapManager(this);
 
 			try {

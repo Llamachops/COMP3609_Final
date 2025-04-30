@@ -423,6 +423,8 @@ public class Player {
 		currentAnimation = animations.get(currentState);
 		currentAnimation.start();
 
+        ((GameWindow) window).soundManager.playSound("attack", false); // Play attack sound
+
 		// Define the attack hitbox
 		int attackWidth = 150; // Length of the attack range
 		int attackHeight = 50; // Height of the attack range
@@ -440,6 +442,7 @@ public class Player {
 					damage *= critMultiplier; // Critical hit
 				}
 				enemy.takeDamage(damage);
+				((GameWindow) window).soundManager.playSound("enemy_hurt", false); // Play attack sound
 			}
 		}
 	}

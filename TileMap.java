@@ -280,6 +280,8 @@ public class TileMap {
                 coin.collect();
                 coinCounter++;
                 System.out.println("Coin collected! Total coins: " + coinCounter);
+
+                ((GameWindow) window).soundManager.playSound("coin", false);
             }
             coin.update();
         }
@@ -344,6 +346,9 @@ public class TileMap {
             livesCounter = 3;
             gameOver();
         }
+        if (amount < 0) {
+            ((GameWindow) window).soundManager.playSound("player_hurt", false); // Play hit sound
+        } 
     }
 
     public void gameOver() {
@@ -424,6 +429,7 @@ public class TileMap {
     }
 
     private void applyPowerUp(PowerUp powerUp) {
+        ((GameWindow) window).soundManager.playSound("powerup", false); // Play attack sound
         switch (powerUp.getType()) {
             case DAMAGE:
                 player.increaseAttackDamage(10); // Increase damage by 10

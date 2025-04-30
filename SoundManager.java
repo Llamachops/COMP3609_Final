@@ -16,19 +16,23 @@ public class SoundManager { // a Singleton class
 	private SoundManager() {
 		clips = new HashMap<String, Clip>();
 
-		Clip clip = loadClip("sounds/background.wav");
-		clips.put("background", clip); // background theme sound
+		Clip clip = loadClip("sounds/bgm.wav");
+		clips.put("background", clip);
 
-		clip = loadClip("sounds/hitSound.wav");
-		clips.put("hit", clip); // played when player's sprite collides
-		// with another sprice
+		clip = loadClip("sounds/attack.wav");
+		clips.put("attack", clip);
 
-		clip = loadClip("sounds/appearSound.wav");
-		clips.put("appear", clip); // played when a special sprite
-		// makes an appearance
+		clip = loadClip("sounds/coin.wav");
+		clips.put("coin", clip);
 
-		clip = loadClip("sounds/BirdSound.wav");
-		clips.put("birdSound", clip); // played for bird-flying animation
+		clip = loadClip("sounds/enemy_hurt.wav");
+		clips.put("enemy_hurt", clip);
+
+		clip = loadClip("sounds/player_hurt.wav");
+		clips.put("player_hurt", clip);
+
+		clip = loadClip("sounds/powerup.wav");
+		clips.put("powerup", clip);
 	}
 
 	public static SoundManager getInstance() { // class method to get Singleton instance
