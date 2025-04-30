@@ -459,12 +459,8 @@ public class Player {
 		}
 
 		// Draw player hitbox for debugging
-		g2.setColor(Color.BLUE);
-		g2.drawRect(
-				x + offsetX, // Apply horizontal scroll offset
-				y, // No vertical scroll offset needed for player
-				hitboxWidth,
-				hitboxHeight);
+		// g2.setColor(Color.BLUE);
+		// g2.drawRect(x + offsetX, y, hitboxWidth, hitboxHeight);
 
 		// Draw the attack effect as a moving gray triangle
 		if (isAttacking) {
@@ -515,21 +511,21 @@ public class Player {
 	}
 
 	public void increaseAttackDamage(int amount) {
-	    attackDamage += amount;
+		attackDamage += amount;
 	}
 
 	public void increaseCritChance(float amount) {
-	    critChance = Math.min(critChance + amount, 1.0f); // Cap at 100%
+		critChance = Math.min(critChance + amount, 1.0f); // Cap at 100%
 	}
 
 	public void increaseCritMultiplier(float amount) {
-	    critMultiplier += amount;
+		critMultiplier += amount;
 	}
-	
+
 	public void resetStats() {
-	    attackDamage = 25; // Reset to default damage
-	    critChance = 0.2f; // Reset to default critical chance
-	    critMultiplier = 2.0f; // Reset to default critical multiplier
+		attackDamage = 25; // Reset to default damage
+		critChance = 0.2f; // Reset to default critical chance
+		critMultiplier = 2.0f; // Reset to default critical multiplier
 	}
 
 	public void setTileMap(TileMap t) {

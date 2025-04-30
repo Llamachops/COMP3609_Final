@@ -167,8 +167,8 @@ public class Fairy implements Enemy {
         g2.fillRect(barX, barY, healthFillWidth, barHeight);
 
         // Debug: Draw hitbox
-        g2.setColor(Color.RED);
-        g2.drawRect(x + offsetX, y, hitboxWidth, hitboxHeight);
+        // g2.setColor(Color.RED);
+        // g2.drawRect(x + offsetX, y, hitboxWidth, hitboxHeight);
     }
 
     @Override

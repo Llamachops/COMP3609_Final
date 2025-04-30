@@ -41,14 +41,6 @@ public class GameWindow extends JFrame implements
 	private Rectangle stopButtonArea; // used by the stop 'button'
 	private volatile boolean isStopped = false;
 
-	private volatile boolean isOverShowAnimButton = false;
-	private Rectangle showAnimButtonArea; // used by the show animation 'button'
-	private volatile boolean isAnimShown = false;
-
-	private volatile boolean isOverPauseAnimButton = false;
-	private Rectangle pauseAnimButtonArea; // used by the pause animation 'button'
-	private volatile boolean isAnimPaused = false;
-
 	private GraphicsDevice device; // used for full-screen exclusive mode
 	private Graphics gScr;
 	private BufferStrategy bufferStrategy;
@@ -207,12 +199,6 @@ public class GameWindow extends JFrame implements
 
 			tileMap.update();
 		}
-
-		if (!isPaused && isAnimShown && !isAnimPaused) {
-			// animation.update();
-		}
-		// imageEffect.update();
-
 	}
 
 	private void screenUpdate() {
@@ -240,11 +226,6 @@ public class GameWindow extends JFrame implements
 		Graphics2D imageContext = (Graphics2D) image.getGraphics();
 
 		tileMap.draw(imageContext);
-
-		if (isAnimShown) {
-			// animation.draw(imageContext); // draw the animation
-		}
-		// imageEffect.draw(imageContext); // draw the image effect
 
 		drawLivesCounter(imageContext); // draw the lives counter
 		drawPlayerStats(imageContext); // draw the player's stats
@@ -332,12 +313,6 @@ public class GameWindow extends JFrame implements
 		stopButtonArea = new Rectangle(leftOffset, 60, 150, 40);
 
 		leftOffset = leftOffset + 170;
-		showAnimButtonArea = new Rectangle(leftOffset, 60, 150, 40);
-
-		leftOffset = leftOffset + 170;
-		pauseAnimButtonArea = new Rectangle(leftOffset, 60, 150, 40);
-
-		leftOffset = leftOffset + 170;
 		int quitLength = quit1Image.getWidth(null);
 		int quitHeight = quit1Image.getHeight(null);
 		quitButtonArea = new Rectangle(leftOffset, 55, 180, 50);
@@ -384,34 +359,6 @@ public class GameWindow extends JFrame implements
 			g.drawString("Stopped", stopButtonArea.x + 40, stopButtonArea.y + 25);
 		else
 			g.drawString("Stop", stopButtonArea.x + 60, stopButtonArea.y + 25);
-
-		// draw the show animation 'button'
-
-		g.setColor(Color.BLACK);
-		g.drawOval(showAnimButtonArea.x, showAnimButtonArea.y,
-				showAnimButtonArea.width, showAnimButtonArea.height);
-
-		if (isOverShowAnimButton && !isPaused && !isStopped)
-			g.setColor(Color.WHITE);
-		else
-			g.setColor(Color.RED);
-		g.drawString("Start Anim", showAnimButtonArea.x + 35, showAnimButtonArea.y + 25);
-
-		// draw the pause anim 'button'
-
-		g.setColor(Color.BLACK);
-		g.drawOval(pauseAnimButtonArea.x, pauseAnimButtonArea.y,
-				pauseAnimButtonArea.width, pauseAnimButtonArea.height);
-
-		if (isOverPauseAnimButton && isAnimShown && !isPaused && !isStopped)
-			g.setColor(Color.WHITE);
-		else
-			g.setColor(Color.RED);
-
-		if (isAnimShown && isAnimPaused && !isStopped)
-			g.drawString("Anim Paused", pauseAnimButtonArea.x + 30, pauseAnimButtonArea.y + 25);
-		else
-			g.drawString("Pause Anim", pauseAnimButtonArea.x + 35, pauseAnimButtonArea.y + 25);
 
 		// draw the quit button (an actual image that changes when the mouse moves over
 		// it)
@@ -602,18 +549,6 @@ public class GameWindow extends JFrame implements
 			isPaused = false;
 		} else if (isOverPauseButton) { // mouse click on Pause button
 			isPaused = !isPaused; // toggle pausing
-		} else if (isOverShowAnimButton && !isPaused) {// mouse click on Start Anim button
-			isAnimShown = true;
-			isAnimPaused = false;
-			// animation.start();
-		} else if (isOverPauseAnimButton) { // mouse click on Pause Anim button
-			if (isAnimPaused) {
-				isAnimPaused = false;
-				// animation.playSound();
-			} else {
-				isAnimPaused = true; // toggle pausing
-				// animation.stopSound();
-			}
 		} else if (isOverQuitButton) { // mouse click on Quit button
 			isRunning = false; // set running to false to terminate
 		}
@@ -629,8 +564,6 @@ public class GameWindow extends JFrame implements
 		if (isRunning) {
 			isOverPauseButton = pauseButtonArea.contains(x, y) ? true : false;
 			isOverStopButton = stopButtonArea.contains(x, y) ? true : false;
-			isOverShowAnimButton = showAnimButtonArea.contains(x, y) ? true : false;
-			isOverPauseAnimButton = pauseAnimButtonArea.contains(x, y) ? true : false;
 			isOverQuitButton = quitButtonArea.contains(x, y) ? true : false;
 		}
 	}

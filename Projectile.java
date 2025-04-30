@@ -66,9 +66,8 @@ public class Projectile {
         g2.drawImage(projectileImage, drawX, drawY, IMAGE_WIDTH, IMAGE_HEIGHT, null);
 
         // Debug: Draw hitbox
-        // TODO: Remove this in production
-        g2.setColor(Color.RED);
-        g2.drawRect(x + offsetX, y, HITBOX_WIDTH, HITBOX_HEIGHT);
+        // g2.setColor(Color.RED);
+        // g2.drawRect(x + offsetX, y, HITBOX_WIDTH, HITBOX_HEIGHT);
     }
 
     public Rectangle getHitbox() {

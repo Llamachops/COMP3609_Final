@@ -187,10 +187,10 @@ public class TileMap {
                             tilesToPixels(y) + offsetY,
                             null);
                     // Draw tile hitbox for debugging
-                    g2.setColor(Color.GREEN);
-                    g2.drawRect(tilesToPixels(x) + offsetX,
-                            tilesToPixels(y) + offsetY,
-                            TILE_SIZE, TILE_SIZE);
+                    // g2.setColor(Color.GREEN);
+                    // g2.drawRect(tilesToPixels(x) + offsetX,
+                    //         tilesToPixels(y) + offsetY,
+                    //         TILE_SIZE, TILE_SIZE);
                 }
             }
         }
@@ -207,14 +207,13 @@ public class TileMap {
                         TILE_SIZE, TILE_SIZE, null);
 
                 // Draw coin hitbox for debugging
-                // TODO: Remove this in production code
-                g2.setColor(Color.RED);
-                Rectangle coinHitbox = coin.getHitbox(); // World coordinates
-                g2.drawRect(
-                        coinHitbox.x + offsetX, // Convert to screen X
-                        coinHitbox.y,
-                        coinHitbox.width,
-                        coinHitbox.height);
+                // g2.setColor(Color.RED);
+                // Rectangle coinHitbox = coin.getHitbox(); // World coordinates
+                // g2.drawRect(
+                //         coinHitbox.x + offsetX, // Convert to screen X
+                //         coinHitbox.y,
+                //         coinHitbox.width,
+                //         coinHitbox.height);
             }
         }
 
