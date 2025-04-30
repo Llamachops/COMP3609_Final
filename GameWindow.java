@@ -73,7 +73,7 @@ public class GameWindow extends JFrame implements
 
 		// Reload the map
 		try {
-			tileMap = tileManager.loadMap("maps/map" + level + ".txt");
+			tileMap = tileManager.loadMap("maps/map" + level + ".txt", tileMap.getPlayer());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -83,22 +83,26 @@ public class GameWindow extends JFrame implements
 
 	void changeLevel() {
 		isPaused = true;
-	    level++; // Increment the level count
-		tileMap.changeNumLives(3 - tileMap.getNumLives()); // Reset lives to 3
-	    try {
-	        // Attempt to load the next level
-	        tileMap = tileManager.loadMap("maps/map" + level + ".txt");
-	        System.out.println("Loaded map: maps/map" + level + ".txt");
-	    } catch (IOException e) {
-	        System.out.println("Failed to load map: maps/map" + level + ".txt");
+		level++; // Increment the level count
+
+		try {
+			// Pass the existing player object to retain stats
+			tileMap = tileManager.loadMap("maps/map" + level + ".txt", tileMap.getPlayer());
+			System.out.println("Loaded map: maps/map" + level + ".txt");
+		} catch (IOException e) {
+			System.out.println("Failed to load map: maps/map" + level + ".txt");
 			restartGame();
-	    }
+		}
+
 		isPaused = false;
 	}
-	
+
 	private void restartGame() {
 		isPaused = true; // Pause the game during the restart
 		level = 1; // Reset to level 1 if the next level doesn't exist
+
+		// Reset player stats
+		tileMap.getPlayer().resetStats();
 
 		// Reset player lives and coin counter
 		tileMap.changeNumLives(3 - tileMap.getNumLives()); // Reset lives to 3
@@ -111,7 +115,7 @@ public class GameWindow extends JFrame implements
 
 		// Reload the map
 		try {
-			tileMap = tileManager.loadMap("maps/map" + level + ".txt");
+			tileMap = tileManager.loadMap("maps/map" + level + ".txt", null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -151,7 +155,7 @@ public class GameWindow extends JFrame implements
 					gameUpdate();
 				}
 				screenUpdate();
-				Thread.sleep(1000 / 30);
+				Thread.sleep(1000 / 60);
 			}
 		} catch (InterruptedException e) {
 		}
@@ -487,7 +491,7 @@ public class GameWindow extends JFrame implements
 			tileManager = new TileMapManager(this);
 
 			try {
-				tileMap = tileManager.loadMap("maps/map" + level + ".txt");
+				tileMap = tileManager.loadMap("maps/map" + level + ".txt", null);
 				int w, h;
 				w = tileMap.getWidth();
 				h = tileMap.getHeight();
@@ -505,26 +509,7 @@ public class GameWindow extends JFrame implements
 		}
 	}
 
-	// displays a message to the screen when the user stops the game
-
-	private void gameOverMessage(Graphics g) {
-
-		Font font = new Font("SansSerif", Font.BOLD, 24);
-		FontMetrics metrics = this.getFontMetrics(font);
-
-		String msg = "Game Over. Thanks for playing!";
-
-		int x = (pWidth - metrics.stringWidth(msg)) / 2;
-		int y = (pHeight - metrics.getHeight()) / 2;
-
-		g.setColor(Color.BLUE);
-		g.setFont(font);
-		g.drawString(msg, x, y);
-
-	}
-
 	// implementation of methods in KeyListener interface
-
 	@Override
 	public void keyPressed(KeyEvent e) {
 
@@ -647,5 +632,4 @@ public class GameWindow extends JFrame implements
 		}
 	}
 
-	
 }

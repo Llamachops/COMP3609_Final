@@ -513,4 +513,26 @@ public class Player {
 	public float getCritMultiplier() {
 		return critMultiplier; // Assume this is a float value (e.g., 2.0 for double damage)
 	}
+
+	public void increaseAttackDamage(int amount) {
+	    attackDamage += amount;
+	}
+
+	public void increaseCritChance(float amount) {
+	    critChance = Math.min(critChance + amount, 1.0f); // Cap at 100%
+	}
+
+	public void increaseCritMultiplier(float amount) {
+	    critMultiplier += amount;
+	}
+	
+	public void resetStats() {
+	    attackDamage = 25; // Reset to default damage
+	    critChance = 0.2f; // Reset to default critical chance
+	    critMultiplier = 2.0f; // Reset to default critical multiplier
+	}
+
+	public void setTileMap(TileMap t) {
+		this.tileMap = t; // Set the tile map
+	}
 }

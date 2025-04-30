@@ -20,41 +20,42 @@ public class TileMapManager {
         loadTileImages();
     }
 
-    public TileMap loadMap(String filename)
-            throws IOException {
-        ArrayList<String> lines = new ArrayList<String>();
+    public TileMap loadMap(String filename, Player existingPlayer) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
         int mapWidth = 0;
         int mapHeight = 0;
 
-        // read every line in the text file into the list
-
-        BufferedReader reader = new BufferedReader(
-                new FileReader(filename));
+        // Read every line in the text file into the list
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
         while (true) {
             String line = reader.readLine();
-            // no more lines to read
             if (line == null) {
                 reader.close();
                 break;
             }
 
-            // add every line except for comments
+            // Add every line except for comments
             if (!line.startsWith("#")) {
                 lines.add(line);
                 mapWidth = Math.max(mapWidth, line.length());
             }
         }
 
-        // parse the lines to create a TileMap
+        // Parse the lines to create a TileMap
         mapHeight = lines.size();
-
         TileMap newMap = new TileMap(window, mapWidth, mapHeight);
+
+        // Reuse the existing player object
+        if (existingPlayer != null) {
+            newMap.setPlayer(existingPlayer);
+        }
+
         for (int y = 0; y < mapHeight; y++) {
             String line = lines.get(y);
             for (int x = 0; x < line.length(); x++) {
                 char ch = line.charAt(x);
 
-                // check if the char represents tile A, B, C etc.
+                // Check if the char represents tile A, B, C, etc.
                 int tile = ch - 'A';
                 if (tile >= 0 && tile < tiles.size()) {
                     newMap.setTile(x, y, tiles.get(tile));
@@ -65,7 +66,6 @@ public class TileMapManager {
                     Troll troll = new Troll(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
                             newMap, newMap.getPlayer());
                     newMap.addTroll(troll);
-                    System.out.println("Troll added at: " + TileMap.tilesToPixels(x) + ", " + TileMap.tilesToPixels(y));
                 } else if (ch == 'f') {
                     Fairy fairy = new Fairy(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
                             newMap, newMap.getPlayer());
@@ -74,7 +74,22 @@ public class TileMapManager {
                     Chest chest = new Chest(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
                             newMap.getPlayer());
                     newMap.addChest(chest);
-                    System.out.println("Chest added at: " + TileMap.tilesToPixels(x) + ", " + TileMap.tilesToPixels(y));
+                } else if (ch == '1') { // Damage power-up
+                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                            PowerUp.PowerUpType.DAMAGE);
+                    newMap.addPowerUp(powerUp);
+                } else if (ch == '2') { // Critical chance power-up
+                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                            PowerUp.PowerUpType.CRIT_CHANCE);
+                    newMap.addPowerUp(powerUp);
+                } else if (ch == '3') { // Critical damage power-up
+                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                            PowerUp.PowerUpType.CRIT_DAMAGE);
+                    newMap.addPowerUp(powerUp);
+                } else if (ch == '4') { // Lives power-up
+                    PowerUp powerUp = new PowerUp(TileMap.tilesToPixels(x), TileMap.tilesToPixels(y) + TileMap.getOffsetY(),
+                            PowerUp.PowerUpType.LIVES);
+                    newMap.addPowerUp(powerUp);
                 }
             }
         }

@@ -28,6 +28,7 @@ public class TileMap {
     private ArrayList<Fairy> fairies = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
     private Chest chest = null;
+    private ArrayList<PowerUp> powerUps = new ArrayList<>();
 
     private int screenWidth, screenHeight;
     private int mapWidth, mapHeight;
@@ -232,8 +233,13 @@ public class TileMap {
             projectile.draw(g2, offsetX, offsetY);
         }
 
+        // Draw power-ups
+        for (PowerUp powerUp : powerUps) {
+            powerUp.draw(g2, offsetX, offsetY);
+        }
+
+        // Draw the chest if it exists
         if (chest != null) {
-            // Draw the chest
             chest.draw(g2, offsetX, offsetY);
         }
     }
@@ -313,6 +319,16 @@ public class TileMap {
             }
         }
 
+        // Check for power-up collection
+        Iterator<PowerUp> powerUpIterator = powerUps.iterator();
+        while (powerUpIterator.hasNext()) {
+            PowerUp powerUp = powerUpIterator.next();
+            if (player.getHitbox().intersects(powerUp.getHitbox())) {
+                applyPowerUp(powerUp);
+                powerUpIterator.remove();
+            }
+        }
+        
         // Check for collision with the chest
         if (chest != null) {
             chest.update();
@@ -402,5 +418,31 @@ public class TileMap {
 
         // Call loadNextLevel in GameWindow
         ((GameWindow) window).changeLevel();
+    }
+
+    public void addPowerUp(PowerUp powerUp) {
+        powerUps.add(powerUp);
+    }
+
+    private void applyPowerUp(PowerUp powerUp) {
+        switch (powerUp.getType()) {
+            case DAMAGE:
+                player.increaseAttackDamage(10); // Increase damage by 10
+                break;
+            case CRIT_CHANCE:
+                player.increaseCritChance(0.05f); // Increase critical chance by 5%
+                break;
+            case CRIT_DAMAGE:
+                player.increaseCritMultiplier(0.5f); // Increase critical damage multiplier by 0.5x
+                break;
+            case LIVES:
+                changeNumLives(1); // Increase lives by 1
+                break;
+        }
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+        player.setTileMap(this);
     }
 }
