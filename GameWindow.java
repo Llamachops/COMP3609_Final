@@ -69,7 +69,7 @@ public class GameWindow extends JFrame implements
 		// Reset player position
 		Player player = tileMap.getPlayer();
 		player.setX(192); // Reset player X position
-		player.setY(TileMap.tilesToPixels(tileMap.getHeight()) - TileMap.TILE_SIZE - player.getHitboxHeight());
+		player.setY(630);
 
 		// Reload the map
 		try {
@@ -88,6 +88,9 @@ public class GameWindow extends JFrame implements
 		try {
 			// Pass the existing player object to retain stats
 			tileMap = tileManager.loadMap("maps/map" + level + ".txt", tileMap.getPlayer());
+			Player player = tileMap.getPlayer();
+			player.setX(192); // Reset player X position
+			player.setY(630);
 			System.out.println("Loaded map: maps/map" + level + ".txt");
 		} catch (IOException e) {
 			System.out.println("Failed to load map: maps/map" + level + ".txt");
@@ -111,7 +114,7 @@ public class GameWindow extends JFrame implements
 		// Reset player position
 		Player player = tileMap.getPlayer();
 		player.setX(192); // Reset player X position
-		player.setY(TileMap.tilesToPixels(tileMap.getHeight()) - TileMap.TILE_SIZE - player.getHitboxHeight());
+		player.setY(630);
 
 		// Reload the map
 		try {

@@ -81,6 +81,12 @@ public class Background {
         g2.drawImage(bgImage, backgroundX2, 0, scaledWidth, scaledHeight, null);
     }
 
+    public void resetPosition() {
+        bgX = 0;
+        backgroundX = 0;
+        backgroundX2 = (int) (bgImageWidth * scaleX);
+    }
+
     public Image loadImage(String fileName) {
         return new ImageIcon(fileName).getImage();
     }

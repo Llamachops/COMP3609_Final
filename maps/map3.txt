@@ -13,6 +13,6 @@ D                                           I             o o   C
 D                    2   !        2                      IIIII  C
 D                      IIIII                                    C
 D         III                          1    1  1        2       C
-D               t            1      IIIIIIIIIIIII               C
-D      1*      EBBBBBBBBBBBBBBBF     o o o o o o                C
+D                            1      IIIIIIIIIIIII               C
+D    421     * EBBBBBBBBBBBBBBBF     o o o o o o                C
 HBBBBBBBBBBBBBBGAAAAAAAAAAAAAAAHBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBG

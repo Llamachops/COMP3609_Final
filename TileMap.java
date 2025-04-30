@@ -65,7 +65,7 @@ public class TileMap {
         System.out.println("mapHeight: " + mapHeight);
         System.out.println("offsetY: " + offsetY);
 
-        bgManager = new BackgroundManager(window, 12);
+        bgManager = new BackgroundManager(window);
 
         coins = new ArrayList<>();
 
@@ -441,8 +441,18 @@ public class TileMap {
         }
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer(Player player, BackgroundManager bgManager) {
         this.player = player;
         player.setTileMap(this);
+        player.setBackgroundManager(bgManager);
+    }
+    
+    public void clearLevel() {
+        coins.clear();
+        trolls.clear();
+        fairies.clear();
+        projectiles.clear();
+        powerUps.clear();
+        chest = null;
     }
 }

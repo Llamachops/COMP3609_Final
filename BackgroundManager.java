@@ -26,7 +26,7 @@ public class BackgroundManager {
 	private Background[] backgrounds;
 	private int numBackgrounds;
 
-	public BackgroundManager(JFrame window, int moveSize) {
+	public BackgroundManager(JFrame window) {
 		numBackgrounds = bgImages.length;
 		backgrounds = new Background[numBackgrounds];
 
@@ -53,4 +53,9 @@ public class BackgroundManager {
 			backgrounds[i].draw(g2);
 	}
 
+	public void reset() {
+	    for (Background background : backgrounds) {
+	        background.resetPosition();
+	    }
+	}
 }

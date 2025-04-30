@@ -44,10 +44,12 @@ public class TileMapManager {
         // Parse the lines to create a TileMap
         mapHeight = lines.size();
         TileMap newMap = new TileMap(window, mapWidth, mapHeight);
+        newMap.clearLevel();
+        newMap.bgManager.reset();
 
         // Reuse the existing player object
         if (existingPlayer != null) {
-            newMap.setPlayer(existingPlayer);
+            newMap.setPlayer(existingPlayer, newMap.bgManager);
         }
 
         for (int y = 0; y < mapHeight; y++) {

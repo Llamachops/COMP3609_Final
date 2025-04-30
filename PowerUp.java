@@ -28,7 +28,7 @@ public class PowerUp {
                 this.image = ImageManager.loadImage("images/collectibles/Diamond.png");
                 break;
             case LIVES:
-                this.image = ImageManager.loadImage("images/collectibles/Heart.png");
+                this.image = ImageManager.loadImage("images/collectibles/Life.png");
                 break;
         }
     }

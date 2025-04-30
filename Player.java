@@ -535,4 +535,8 @@ public class Player {
 	public void setTileMap(TileMap t) {
 		this.tileMap = t; // Set the tile map
 	}
+
+	public void setBackgroundManager(BackgroundManager b) {
+		this.bgManager = b; // Set the background manager
+	}
 }
