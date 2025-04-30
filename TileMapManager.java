@@ -10,8 +10,6 @@ import javax.swing.ImageIcon;
 public class TileMapManager {
 
     private ArrayList<Image> tiles;
-    private int currentMap = 1;
-
     private JFrame window;
 
     public TileMapManager(JFrame window) {
